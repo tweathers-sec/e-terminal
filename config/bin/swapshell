@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+HERE=0; NO_LAUNCH=0
+case "${1:-}" in
+  --here)       HERE=1 ;;
+  --no-launch)  NO_LAUNCH=1 ;;
+  -h|--help)    sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  "") ;;
+  *) echo "swapshell: unknown option '$1' (try --help)" >&2; exit 2 ;;
+esac
+
+if [ -z "${NO_COLOR:-}" ] && [ -t 1 ]; then
+  RESET=$'\033[0m'; BOLD=$'\033[1m'; DIM=$'\033[2m'
+  GREEN=$'\033[38;5;108m'; YELLOW=$'\033[38;5;179m'; BLUE=$'\033[38;5;109m'
+  RED=$'\033[38;5;167m';  GRAY=$'\033[38;5;245m'
+else
+  RESET=''; BOLD=''; DIM=''; GREEN=''; YELLOW=''; BLUE=''; RED=''; GRAY=''
+fi
+
+info() { printf '%s▸%s %s\n' "$BLUE"   "$RESET" "$*"; }
+warn() { printf '%s▸%s %s\n' "$YELLOW" "$RESET" "$*" >&2; }
+fail() { printf '%s✗%s %s\n' "$RED"    "$RESET" "$*" >&2; }
+
+callout() {
+  local color="$1" title="$2"; shift 2
+  local l W=${#title}
+  for l in "$@"; do [ ${#l} -gt "$W" ] && W=${#l}; done
+  local bar; bar="$(printf '─%.0s' $(seq 1 $((W + 2))))"
+  printf '%s╭%s╮%s\n'          "$color" "$bar" "$RESET"
+  printf '%s│%s %s%-*s%s %s│%s\n' "$color" "$RESET" "$BOLD" "$W" "$title" "$RESET" "$color" "$RESET"
+  printf '%s├%s┤%s\n'          "$color" "$bar" "$RESET"
+  for l in "$@"; do printf '%s│%s %-*s %s│%s\n' "$color" "$RESET" "$W" "$l" "$color" "$RESET"; done
+  printf '%s╰%s╯%s\n'          "$color" "$bar" "$RESET"
+}
+
+os_login_shell() {
+  if [ "$(uname -s)" = "Darwin" ]; then
+    dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}'
+  else
+    getent passwd "$USER" 2>/dev/null | cut -d: -f7
+  fi
+}
+current="$(os_login_shell)"; [ -n "${current:-}" ] || current="${SHELL:-}"
+
+candidates=()
+for s in nu zsh bash fish; do
+  p="$(command -v "$s" 2>/dev/null || true)"
+  [ -n "$p" ] && candidates+=("$p")
+done
+if [ -r /etc/shells ]; then
+  while IFS= read -r line; do
+    case "$line" in /*) candidates+=("$line") ;; esac
+  done < /etc/shells
+fi
+
+declare -a shells=()
+[ -x "$current" ] && shells+=("$current")
+for s in "${candidates[@]}"; do
+  [ -x "$s" ] || continue
+  dup=0
+  for k in "${shells[@]}"; do [ "$k" = "$s" ] && { dup=1; break; }; done
+  [ "$dup" -eq 0 ] && shells+=("$s")
+done
+[ "${#shells[@]}" -gt 0 ] || { fail "no shells found"; exit 1; }
+
+label() { [ "$1" = "$current" ] && printf '%s  (current default)\n' "$1" || printf '%s\n' "$1"; }
+choice=""
+if command -v fzf >/dev/null 2>&1 && [ -r /dev/tty ]; then
+  choice="$(for s in "${shells[@]}"; do label "$s"; done \
+    | fzf --prompt="shell > " --height=40% --reverse --border \
+          --header="select default shell (current: $current)" \
+    | awk '{print $1}')"
+else
+  echo "Select a shell (current default: $current):"
+  i=1; for s in "${shells[@]}"; do echo "  $i) $s"; i=$((i + 1)); done
+  read -r -p "Enter number: " num </dev/tty || true
+  if [[ "${num:-}" =~ ^[0-9]+$ ]] && [ "$num" -ge 1 ] && [ "$num" -le "${#shells[@]}" ]; then
+    choice="${shells[$((num - 1))]}"
+  fi
+fi
+[ -n "${choice:-}" ] || { fail "nothing selected"; exit 1; }
+
+if [ "$HERE" -eq 1 ]; then
+  info "launching ${BOLD}$choice${RESET} for this session ${DIM}(default unchanged)${RESET}"
+  exec "$choice"
+fi
+
+if [ "$choice" = "$current" ]; then
+  info "${BOLD}$choice${RESET} is already your default shell; nothing to change."
+  exit 0
+fi
+
+if ! grep -qxF "$choice" /etc/shells 2>/dev/null; then
+  info "$choice isn't in /etc/shells; adding it ${DIM}(one-time, needs sudo)${RESET}"
+  if ! printf '%s\n' "$choice" | sudo tee -a /etc/shells >/dev/null; then
+    fail "couldn't add $choice to /etc/shells; default unchanged ($current)."
+    exit 1
+  fi
+fi
+
+info "setting your default shell to ${BOLD}$choice${RESET} ${DIM}— enter your password if prompted (chsh, not sudo)${RESET}"
+if ! chsh -s "$choice"; then
+  fail "chsh didn't complete; default still $current. Retry: ${BOLD}chsh -s $choice${RESET}"
+  exit 1
+fi
+
+printf '\n%s✓%s %sdefault shell changed%s  %s→%s  %s%s%s\n' \
+  "$GREEN" "$RESET" "$BOLD" "$RESET" "$GRAY" "$RESET" "$BOLD$GREEN" "$choice" "$RESET"
+printf '%s  every new terminal window will launch it.%s\n' "$DIM" "$RESET"
+[ "$(uname -s)" = "Darwin" ] && \
+  printf '%s  (macOS: Ghostty / Dock-launched apps update $SHELL after your next login)%s\n' "$DIM" "$RESET"
+
+if [ "$NO_LAUNCH" -eq 1 ] || [ ! -r /dev/tty ]; then
+  printf '\n'
+  callout "$YELLOW" "Start a fresh session to use it" \
+    "Open a new terminal window, or run:  exec $choice"
+  exit 0
+fi
+
+printf '\n%s▸%s starting %s%s%s now — type %sexit%s to drop back to your current shell\n' \
+  "$BLUE" "$RESET" "$BOLD" "$choice" "$RESET" "$BOLD" "$RESET"
+exec "$choice" || fail "could not start $choice (it is still your default for new windows)"

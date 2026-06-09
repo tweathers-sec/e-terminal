@@ -1,0 +1,22 @@
+# Local overrides & secrets — never commit
+*.local
+*.local.nu
+.zshrc.local
+config/nushell/env.local.nu
+
+# Backups / rollback snapshots
+.e-terminal-backup/
+e-terminal-rollback/
+
+# Editor/agent local state
+.claude/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Downloaded font artifacts
+fonts/*.tar.xz
+fonts/*.zip
+fonts/*.ttf
+fonts/*.otf

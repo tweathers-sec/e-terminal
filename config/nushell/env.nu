@@ -1,0 +1,43 @@
+# e-session-log re-launches nu inside script(1); E_SESSION_LOG_ACTIVE prevents a loop.
+if ("E_SESSION_LOG_ACTIVE" not-in $env) and ("TMUX" not-in $env) and $nu.is-interactive {
+  let elog = ([
+    ($nu.home-dir | path join ".local" "bin" "e-session-log")
+    "/usr/local/bin/e-session-log"
+  ] | where {|p| $p | path exists } | get 0?)
+  if ($elog | is-not-empty) {
+    exec $elog start $nu.current-exe
+  }
+}
+
+use std "path add"
+if ($nu.os-info.name == "macos") {
+  path add "/opt/homebrew/bin"
+  path add "/opt/homebrew/sbin"
+} else {
+  # Debian omits sbin from non-root PATH; net commands (ip, ss, ifconfig) live there.
+  path add "/usr/local/sbin"
+  path add "/usr/sbin"
+  path add "/sbin"
+}
+path add ($nu.home-dir | path join ".cargo" "bin")
+path add ($nu.home-dir | path join ".local" "bin")
+path add ($nu.home-dir | path join "go" "bin")
+
+$env.EDITOR = "nvim"
+$env.CARAPACE_BRIDGES = 'zsh,fish,bash'
+
+let starship_cache = ($nu.home-dir | path join ".cache" "starship" "init.nu")
+let zoxide_cache   = ($nu.home-dir | path join ".cache" "zoxide.nu")
+let carapace_cache = ($nu.home-dir | path join ".cache" "carapace" "init.nu")
+let atuin_cache    = ($nu.home-dir | path join ".cache" "atuin" "init.nu")
+
+mkdir ($nu.home-dir | path join ".cache" "starship")
+mkdir ($nu.home-dir | path join ".cache" "carapace")
+mkdir ($nu.home-dir | path join ".cache" "atuin")
+
+if (which starship | is-not-empty) { starship init nu     | save -f $starship_cache } else { "" | save -f $starship_cache }
+if (which zoxide   | is-not-empty) { zoxide init nushell  | save -f $zoxide_cache   } else { "" | save -f $zoxide_cache }
+if (which carapace | is-not-empty) { carapace _carapace nushell | save -f $carapace_cache } else { "" | save -f $carapace_cache }
+if (which atuin    | is-not-empty) { atuin init nu --disable-up-arrow | save -f $atuin_cache } else { "" | save -f $atuin_cache }
+
+source ($nu.default-config-dir | path join "env.local.nu")

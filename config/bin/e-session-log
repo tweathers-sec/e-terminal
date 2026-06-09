@@ -1,0 +1,111 @@
+#!/usr/bin/env sh
+set -u
+
+LOG_DIR="${E_SESSION_LOG_DIR:-$HOME/terminal_logs}"
+CONF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal"
+SENTINEL="$CONF_DIR/logging-disabled"
+
+is_disabled() {
+  [ -n "${E_NO_SESSION_LOG:-}" ] && return 0
+  [ -e "$SENTINEL" ] && return 0
+  return 1
+}
+
+_es_plain() {
+  command -v perl >/dev/null 2>&1 || { cat "$1"; return; }
+  LC_ALL=C perl -pe 's/\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)//g; s/\x1b[()][AB0]//g; s/\x1b[=>78]//g; s/\x1b\[[0-9;?]*[ -\/]*[@-~]//g; s/[\x08\r]//g' "$1"
+}
+
+view() {
+  plain=0
+  case "${1:-}" in --plain|-p) plain=1; shift ;; esac
+  f="${1:-}"
+  if [ -n "$f" ]; then
+    [ -f "$f" ] || { echo "view: no such log: $f" >&2; return 2; }
+    _es_plain "$f"; return 0
+  fi
+  if [ "$plain" -eq 0 ] && [ -t 1 ] && command -v e-session-view >/dev/null 2>&1; then
+    exec e-session-view
+  fi
+  newest="$(ls -t "$LOG_DIR"/session_*.log 2>/dev/null | head -1)"
+  [ -n "$newest" ] || { echo "view: no logs in $LOG_DIR" >&2; return 2; }
+  _es_plain "$newest"
+}
+
+case "${1:-}" in
+  on)
+    rm -f "$SENTINEL" 2>/dev/null
+    echo "session logging: ON  - new terminals record to ${E_SESSION_LOG_DIR:-$HOME/terminal_logs}"
+    exit 0
+    ;;
+  off)
+    mkdir -p "$CONF_DIR" 2>/dev/null
+    : > "$SENTINEL"
+    echo "session logging: OFF - existing recordings finish; new terminals won't record"
+    echo "(re-enable with: e-session-log on)"
+    exit 0
+    ;;
+  status)
+    if is_disabled; then echo "session logging: OFF"; else echo "session logging: ON   -> $LOG_DIR"; fi
+    if [ -n "${E_SESSION_LOG_ACTIVE:-}" ]; then
+      echo "this session:    RECORDING${E_SESSION_LOG_FILE:+ -> $E_SESSION_LOG_FILE}"
+    else
+      echo "this session:    not recording"
+    fi
+    exit 0
+    ;;
+  dir)
+    echo "$LOG_DIR"
+    exit 0
+    ;;
+  view)
+    shift
+    view "$@"
+    exit $?
+    ;;
+  -h|--help)
+    sed -n '4,18p' "$0" | sed 's/^# \{0,1\}//'
+    exit 0
+    ;;
+  start)
+    shift
+    ;;
+  *)
+    echo "usage: e-session-log {status|view [-p] [file]|on|off|dir|start <shell>}" >&2
+    echo "  view    interactive session browser (TUI)      never 'cat' a raw log" >&2
+    echo "  status  show state + this session                on/off  toggle logging" >&2
+    echo "try 'e-session-log --help' for details" >&2
+    exit 2
+    ;;
+esac
+
+shell="${1:-${SHELL:-/bin/sh}}"
+export E_SESSION_LOG_ACTIVE=1
+
+# e-session-rec forwards SIGWINCH to the child shell; BSD script(1) on macOS does not.
+REC="$(dirname "$0")/e-session-rec"
+have_rec=0
+if [ -x "$REC" ]; then have_rec=1; fi
+
+if is_disabled || [ -n "${TMUX:-}" ] || [ ! -t 0 ] || [ ! -t 1 ] \
+   || { [ "$have_rec" -eq 0 ] && ! command -v script >/dev/null 2>&1; }; then
+  exec "$shell"
+fi
+
+if ! mkdir -p "$LOG_DIR" 2>/dev/null; then
+  exec "$shell"
+fi
+chmod 700 "$LOG_DIR" 2>/dev/null
+umask 077
+
+log="$LOG_DIR/session_$(date +%Y%m%d_%H%M%S)_$(basename "$shell")_$$.log"
+export E_SESSION_LOG_FILE="$log"
+
+if [ "$have_rec" -eq 1 ]; then
+  exec "$REC" "$log" "$shell"
+fi
+# BSD (macOS): script [opts] file [command...]; util-linux (Linux): script [opts] [file] -c command
+case "$(uname -s)" in
+  Darwin) exec script -q "$log" "$shell" ;;
+  *)      exec script -q -c "$shell" "$log" ;;
+esac

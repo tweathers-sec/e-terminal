@@ -1,0 +1,101 @@
+#!/usr/bin/env sh
+set -u
+
+STARSHIP="${STARSHIP_CONFIG:-$HOME/.config/starship.toml}"
+THEMES_DIR="$HOME/.config/tmux/themes"
+TMUX_ACTIVE="$HOME/.config/tmux/theme.conf"
+ZELLIJ_DIR="${ZELLIJ_CONFIG_DIR:-$HOME/.config/zellij}"
+ZELLIJ_CONF="$ZELLIJ_DIR/config.kdl"
+ZELLIJ_THEMES="$ZELLIJ_DIR/themes"
+SELF="$0"
+
+themes() { ls "$THEMES_DIR" 2>/dev/null | sed -n 's/\.conf$//p'; }
+exists() { [ -f "$THEMES_DIR/$1.conf" ]; }
+current() { sed -n 's/^palette = "\(.*\)"/\1/p' "$STARSHIP" 2>/dev/null | head -1; }
+
+thm() { sed -n 's/^set -g @thm_'"$2"' "\(#[0-9a-fA-F]*\)".*/\1/p' "$THEMES_DIR/$1.conf" 2>/dev/null | head -1; }
+
+block() {
+  h=$1; t=$2; r=$((0x${h#\#}))
+  rr=$(( (r >> 16) & 255 )); gg=$(( (r >> 8) & 255 )); bb=$(( r & 255 ))
+  printf '\033[48;2;%d;%d;%dm%s\033[0m' "$rr" "$gg" "$bb" "$t"
+}
+fgc() {
+  h=$1; t=$2; r=$((0x${h#\#}))
+  printf '\033[38;2;%d;%d;%dm%s\033[0m' "$(( (r>>16)&255 ))" "$(( (r>>8)&255 ))" "$(( r&255 ))" "$t"
+}
+
+preview() {
+  n=$1; exists "$n" || { echo "unknown theme: $n"; return; }
+  bg=$(thm "$n" bg); bg2=$(thm "$n" bg2); bg4=$(thm "$n" bg4)
+  fg=$(thm "$n" fg); gray=$(thm "$n" gray); acc=$(thm "$n" accent)
+  yel=$(thm "$n" yellow); aq=$(thm "$n" aqua)
+  printf '  %s\n\n' "$(fgc "$acc" "$n")"
+  printf '  palette  '
+  for c in "$bg" "$bg2" "$bg4" "$gray" "$fg" "$acc" "$aq" "$yel"; do block "$c" '   '; done
+  printf '\n\n'
+  printf '  '
+  block "$bg4" "$(fgc "$fg" ' user ')"; block "$acc" "$(fgc "$bg" ' ~/work ')"
+  block "$bg2" "$(fgc "$yel" ' main ')"; block "$bg2" "$(fgc "$gray" '  12:00:00 ')"
+  printf '\n  %s\n\n' "$(fgc "$acc" '>')"
+  printf '  '
+  block "$bg4" "$(fgc "$fg" ' session ')"; printf ' '
+  block "$acc" "$(fgc "$bg" ' ~/work ')"; printf ' '
+  block "$bg2" "$(fgc "$yel" ' cpu 12% ')"
+  printf '\n'
+}
+
+apply() {
+  n=$1
+  exists "$n" || { echo "theme: unknown theme '$n' (try: theme list)" >&2; return 1; }
+  if [ -f "$STARSHIP" ]; then
+    tmp=$(mktemp) || return 1
+    sed 's/^palette = .*/palette = "'"$n"'"/' "$STARSHIP" > "$tmp" && cat "$tmp" > "$STARSHIP"
+    rm -f "$tmp"
+  fi
+  mkdir -p "$(dirname "$TMUX_ACTIVE")"
+  cat "$THEMES_DIR/$n.conf" > "$TMUX_ACTIVE"
+  if command -v tmux >/dev/null 2>&1 && tmux info >/dev/null 2>&1; then
+    tmux source-file "$TMUX_ACTIVE" 2>/dev/null
+    tmux refresh-client -S 2>/dev/null
+  fi
+  if [ -f "$ZELLIJ_THEMES/$n.kdl" ]; then
+    mkdir -p "$ZELLIJ_DIR"
+    if [ -f "$ZELLIJ_CONF" ] && grep -qE '^[[:space:]]*theme[[:space:]]+"' "$ZELLIJ_CONF"; then
+      tmp=$(mktemp) && sed 's/^[[:space:]]*theme[[:space:]][[:space:]]*".*"/theme "'"$n"'"/' "$ZELLIJ_CONF" > "$tmp" && cat "$tmp" > "$ZELLIJ_CONF" && rm -f "$tmp"
+    else
+      printf 'theme "%s"\n' "$n" >> "$ZELLIJ_CONF"
+    fi
+  fi
+}
+
+case "${1:-}" in
+  -h|--help) sed -n '3,12p' "$SELF" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  list) themes; exit 0 ;;
+  current) current; exit 0 ;;
+  __preview) preview "${2:-}"; exit 0 ;;   # internal: used by the fzf preview pane
+  __apply)   apply "${2:-}"; exit $? ;;     # internal: used by the fzf live-preview bind
+  "") ;;
+  *) apply "$1" && echo "theme: applied '$1'"; exit $? ;;
+esac
+
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "theme: fzf not found. Use: theme <name>   (available: $(themes | tr '\n' ' '))" >&2
+  exit 1
+fi
+[ -n "$(themes)" ] || { echo "theme: no themes in $THEMES_DIR" >&2; exit 1; }
+
+orig="$(current)"; [ -n "$orig" ] || orig="jellybeans"
+pick="$(themes | fzf \
+  --prompt='theme > ' --height=60% --reverse --border \
+  --header='up/down to preview live - Enter apply - Esc cancel' \
+  --preview="sh '$SELF' __preview {}" --preview-window='right,62%' \
+  --bind="focus:execute-silent(sh '$SELF' __apply {})" )"
+
+if [ -n "${pick:-}" ]; then
+  apply "$pick"
+  echo "theme: applied '$pick'"
+else
+  apply "$orig" >/dev/null 2>&1   # cancelled: revert the live preview
+  echo "theme: kept '$orig'"
+fi

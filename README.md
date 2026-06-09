@@ -1,0 +1,311 @@
+<div align="center">
+
+# e-terminal
+
+**One command. Any machine. The same beautiful, tactical terminal.**
+
+Drop it on macOS, Debian, Ubuntu, Kali, or Parrot and get an identical, pilot-dashboard
+terminal - themed prompt, status bar, multiplexer, and a cross-platform command toolbelt -
+with zero manual tweaking.
+
+```sh
+gh repo clone tweathers-sec/e-terminal ~/.e-terminal && ~/.e-terminal/install.sh
+```
+
+<img src="images/hero_nushell.png" alt="e-terminal: the arrow-themed prompt running a structured ifconfig" width="900">
+
+</div>
+
+> **Warning - test on a disposable VM first.** The installer changes your shell, prompt, tmux, and
+> terminal configuration and sets your **login shell**. Everything it replaces is backed up to
+> `~/.e-terminal-backup/<timestamp>/` (and `uninstall.sh` restores it), but you should still validate
+> it on a throwaway VM or container before installing on a machine you depend on.
+
+---
+
+## Highlights
+
+- **Cross-platform, one command** - `./install.sh` bootstraps a bare box (packages, font, plugins,
+  configs) on macOS *and* Debian/Ubuntu/Kali/Parrot. Idempotent and safe to re-run.
+- **Switchable themes** - `theme` recolors the **prompt + tmux + zellij** together, live. Ships
+  `arrow` (default), `jellybeans`, `gruvbox`, `catppuccin`, `nord`, `tokyonight`.
+- **Identical prompt in every shell** - a two-line Starship powerline that looks the same in
+  Nushell and zsh.
+- **A status bar that earns its space** - session, hostname + primary/tunnel IP, windows, network,
+  CPU, and cloud context.
+- **Structured command toolbelt** - `ifconfig`, `myip`, `ports`, `dns`, `scan`, `sslcheck`,
+  `servers`/`sshm`, and more - all returning Nushell tables. Discover them with `ehelp`.
+- **Session logging on by default** - every shell is recorded to `~/terminal_logs/` for later
+  review and screenshots.
+- **Styled root** - `sudo nu`, `sudo -i`, and `rootsh` get the same setup on macOS and Linux.
+
+> The installer **never changes your login shell silently** and **never touches secrets.**
+
+---
+
+## Quick start
+
+```sh
+# 1. Clone + install (idempotent - safe to re-run)
+gh repo clone tweathers-sec/e-terminal ~/.e-terminal
+~/.e-terminal/install.sh
+```
+
+Then:
+
+1. Open a **new** terminal window.
+2. In tmux, press `prefix + I` (`Ctrl-a`, then `Shift-i`) to install tmux plugins.
+3. Run `swapshell` to choose your default shell.
+
+**Requirements:** [Homebrew](https://brew.sh) on macOS; `sudo` on Linux (for `apt` + root setup).
+[Ghostty](https://ghostty.org) is installed automatically on macOS; on Linux, install it separately
+- the config is already in place.
+
+---
+
+## What it does
+
+| Step | macOS | Debian / Ubuntu / Kali / Parrot |
+|------|-------|---------------------------------|
+| **Packages** | `brew bundle` (Brewfile) | `apt` + official installers/releases (starship, zoxide, atuin, eza, nushell, carapace, zellij; handles `batcat`/`fdfind` shims) |
+| **Font** | `font-jetbrains-mono-nerd-font` cask | Nerd Fonts release → `~/.local/share/fonts` + `fc-cache` |
+| **Plugins** | TPM + zsh plugins (git clone) | same |
+| **Configs** | symlinked, with timestamped backups | same |
+| **Root** | links the setup into `/var/root` | links the setup into `/root` |
+| **Shell** | suggests `swapshell` (default: Nushell) | suggests `swapshell` (default: **zsh** on Kali/Parrot, Nushell elsewhere) |
+
+---
+
+## The stack
+
+| Tool | Role |
+|---|---|
+| **[Ghostty](https://ghostty.org)** | Terminal - JetBrains Mono Nerd Font, themed to match. Launches your login shell like every terminal (no `command` override). |
+| **[Starship](https://starship.rs)** | Prompt - one two-line powerline, identical in Nushell and zsh. |
+| **[tmux](https://github.com/tmux/tmux)** | Default multiplexer - `Ctrl-a` prefix, themed 3-zone status bar, sessionx/floax/resurrect/thumbs. |
+| **[zellij](https://zellij.dev)** | Optional alternative multiplexer (alongside tmux) - themed to match. Launch with `zellij`. |
+| **[Nushell](https://nushell.sh)** | Default shell (except Kali/Parrot) - structured data, vi mode, carapace completions, atuin `Ctrl-R`. |
+| **zsh** | Universal fallback (default on Kali/Parrot) - autosuggestions, syntax highlighting, history-substring search, atuin. |
+| **Toolbelt** | fzf · zoxide · atuin · eza · bat · fd · ripgrep · carapace |
+
+The **prompt is identical in Nushell and zsh** by design, so switching shells never changes how
+things look.
+
+### The prompt
+
+A two-line Starship powerline:
+
+- **Line 1:** OS icon (auto-detected per distro) → `user@host` → directory → git status, with the
+  time pushed to the right edge via `$fill` (so it works the same in every shell).
+- **Line 2:** just the `❯` prompt character.
+
+![The two-line Starship prompt, with a colored `ls`](images/zsh.png)
+
+### The status bar (tmux)
+
+Transparent background with rounded capsules, in three zones:
+
+- **Left** - session name + **host capsule**: hostname, primary IP, and tunnel IP (NetBird /
+  Tailscale CGNAT, auto-detected if present).
+- **Center** - window list.
+- **Right** - network throughput, CPU, and cloud context (Hetzner / DigitalOcean).
+
+![The tmux status bar](images/tmux.png)
+
+---
+
+## Themes
+
+Switch the **Starship prompt, tmux bar, and zellij UI** colors *together* - fonts and layout never
+change.
+
+```sh
+theme               # arrow through a live preview; Enter applies, Esc cancels
+theme arrow         # or: jellybeans · gruvbox · catppuccin · nord · tokyonight
+theme list          # list available themes
+```
+
+| Theme | Look |
+|---|---|
+| **`arrow`** *(default)* | Tactical black + orange-red - matches the ARROW console |
+| `jellybeans` | Muted neutral grays + soft sky-blue accent |
+| `gruvbox` · `catppuccin` · `nord` · `tokyonight` | The popular dark palettes |
+
+![The theme picker with a live preview](images/theme.png)
+
+The same palette themes zellij too (an optional alternative multiplexer):
+
+![Zellij, themed to match](images/zellij.png)
+
+Switching is **live**: the prompt recolors on the next prompt; tmux and zellij hot-reload
+immediately. Your choice **persists** (Starship `palette` + `~/.config/tmux/theme.conf` +
+`zellij` `theme` line).
+
+**Add your own:** drop a `<name>.conf` in `~/.config/tmux/themes/`, a matching `[palettes.<name>]`
+block in `starship.toml`, and (optionally) a `<name>.kdl` in `~/.config/zellij/themes/`.
+
+---
+
+## Command toolbelt (`ehelp`)
+
+Cross-platform structured commands (macOS + Linux), loaded by `config.nu`. **Run `ehelp`** to list
+them all - `ehelp <text>` filters, and it returns a table, so `ehelp | where group == security`
+works too.
+
+![`ehelp` - the full command index](images/ehelp.png)
+
+| Command | What it does |
+|---|---|
+| `ifconfig` | Active host-adapter table: status (primary = default-route adapter), IPv4, CIDR, gateway, MTU, MAC. `--ipv6` adds v6; `-a` all adapters; `-r` raw. |
+| `myip` | Public IP + provider + location (ipinfo.io), then internal addresses. `-l` = internal only, no network call. |
+| `sysinfo` | Host dashboard: hostname/OS/kernel/uptime, load + cores, memory, disk, network, DNS. `--usb` lists USB devices. |
+| `ports` | Listening sockets with owning **pid/process/user**. `-u` adds UDP; `--sudo` probes as root. |
+| `dns <host>` | A/AAAA/MX/NS/TXT/CNAME records as a table; PTR for an IP. |
+| `sslcheck <host> [port]` | TLS cert subject/issuer/SAN + **days-to-expiry** (green/amber/red). |
+| `scan` | Hosts on the local network (ARP/neighbour cache: ip/mac/iface). |
+| `geoip <ip>` | Geolocate any IP (org/city/region/country/coords). |
+| `servers` · `sshm` | Unified Hetzner + DigitalOcean inventory; `sshm` fuzzy-picks one and SSHes in. |
+| `genpass` · `b64` · `digest` · `urlencode`/`urldecode` | Password gen (`-s` symbols), base64 (`-d`), sha256/`--md5`/`--sha512`, percent-encoding. |
+| `extract <archive>` | Unpack tar.\*/zip/gz/bz2/xz/zst/7z/rar by extension. |
+| `weather [city]` · `psg <pat>` · `killp` | `wttr.in` one-liner; process search; fuzzy-pick-and-kill. |
+
+Plus the helpers on `PATH`: **`swapshell`** (change default shell), **`theme`** (switch theme),
+**`e-session-log`** (session logging), **`rootsh`** (styled root).
+
+---
+
+## Session logging
+
+Every interactive terminal is **recorded by default** - review and screenshot sessions later. Each
+shell is re-launched inside a small **resize-aware pty recorder** (falls back to `script(1)`),
+capturing the full session (rendered prompt with its timestamp, every command, colors, output) to a
+plain typescript. Resize-aware means the prompt keeps filling to the real window width even after
+you resize - unlike bare `script(1)` on macOS. Logs land in:
+
+```
+~/terminal_logs/session_YYYYMMDD_HHMMSS_<shell>_<pid>.log
+```
+
+`cat` the file in any terminal to replay it with original colors. The recorder is re-entrant and
+skips redundant work inside tmux panes.
+
+```sh
+e-session-log view        # browse past sessions in a 3-pane TUI
+e-session-log status      # on? where? is this session recording?
+e-session-log off | on    # disable / re-enable for future terminals
+e-session-log dir         # print the log directory
+```
+
+### `e-session-log view` - browse your sessions
+
+A fast terminal UI for reviewing recorded sessions. Pick a session on the left, step through the
+commands it ran on the right, and read the fully rendered output below - colors, tables, and prompts
+exactly as they appeared. Search across **all** logs by command, or by command + output (`⇥` toggles
+the scope); sort by newest, oldest, or most commands (`s`); and press `↵` to drop into a full-screen,
+scrollable replay of any session. Sessions are replayed at the exact size they were recorded, so wide
+tables and long output render faithfully.
+
+![The e-session-log session browser](images/e-session-log.png)
+
+- **One session only:** launch it with `E_NO_SESSION_LOG=1`.
+- **Change location:** export `E_SESSION_LOG_DIR=/path` (e.g. in `~/.zshrc.local` / `env.local.nu`).
+
+---
+
+## Shells & root
+
+### `swapshell` - change your default shell
+
+```sh
+swapshell               # fzf-pick a shell, set it as the OS login shell, and start it now
+swapshell --no-launch   # set the default only
+swapshell --here        # start a shell for this session only (no default change)
+```
+
+It sets the **OS login shell** with `chsh` (your own password - not sudo), so the change applies to
+**every** terminal, then starts the new shell right away in a nested session.
+
+![swapshell - pick your default shell](images/swapshell.png)
+
+### `rootsh` - styled root (macOS + Linux)
+
+```sh
+rootsh          # styled root nushell   (sudo -H nu under the hood)
+rootsh zsh      # styled root zsh
+```
+
+The installer shares the setup with **root** on both OSes - linking configs into root's home
+(`/var/root` on macOS, `/root` on Linux) and the user-installed tools onto a system `PATH` - so
+`sudo nu`, `sudo -i`, and `rootsh` all get the same prompt and commands. `rootsh` is one
+OS-detecting command. Skip with `SKIP_ROOT=1`; extend to every human user (Linux) with
+`INSTALL_ALL_USERS=1`.
+
+---
+
+## Install options
+
+Prefix the installer with any of these:
+
+```sh
+DRY_RUN=1 ./install.sh                      # print actions, change nothing
+SKIP_FONT=1 ./install.sh                    # skip the font
+SKIP_HCLOUD=1 SKIP_DOCTL=1 ./install.sh     # skip the cloud CLIs
+```
+
+| Flag | Effect |
+|---|---|
+| `DRY_RUN` | Print every action, change nothing |
+| `SKIP_BREW` / `SKIP_APT` | Skip package installs |
+| `SKIP_FONT` | Skip the Nerd Font |
+| `SKIP_PLUGINS` / `SKIP_TMUX_PLUGINS` | Skip zsh / tmux plugins |
+| `SKIP_CLEANUP` | Leave any pre-existing oh-my-zsh / prezto / zinit in place |
+| `SKIP_SHELL_CHANGE` | Don't print shell-change advice |
+| `SKIP_ROOT` | Don't configure root |
+| `INSTALL_ALL_USERS` | Also link configs for every human user (Linux) |
+| `NO_COLOR` | Plain output |
+
+On install, conflicting zsh frameworks (oh-my-zsh, prezto, zinit, zplug, antigen, p10k) are **moved
+into the backup dir** (`~/.e-terminal-backup/<timestamp>/`), never deleted - they fight the same ZLE
+widgets as this setup. Restore them from there if needed.
+
+---
+
+## Secrets & machine-specific config
+
+Nothing secret lives in this repo. The installer seeds two git-ignored override files, sourced last
+- put machine PATHs, tokens, and env there:
+
+- `~/.zshrc.local`
+- nushell `env.local.nu` - in nu's native config dir: `~/Library/Application Support/nushell/` on
+  macOS, `~/.config/nushell/` on Linux (run `nu -c '$nu.default-config-dir'` to confirm).
+
+---
+
+## Uninstall / rollback
+
+```sh
+~/.e-terminal/uninstall.sh        # remove managed symlinks, restore newest backups
+```
+
+Per-run backups live in `~/.e-terminal-backup/<timestamp>/`. Packages are left installed (manual
+removal hints are printed).
+
+---
+
+## Repo layout
+
+```
+install.sh · uninstall.sh · Brewfile
+lib/                common, symlink, packages, font, plugins, cleanup, root
+config/
+  ghostty/          config + themes
+  starship/         starship.toml ([palettes.*] per theme)
+  tmux/             tmux.conf, scripts/ (status), themes/ (per-theme @thm_*)
+  zellij/           themes/ (per-theme KDL)
+  nushell/          config.nu, env.nu, scripts/ (the toolbelt)
+  zsh/              .zshrc
+  bin/              swapshell · e-session-log · theme
+```
+
+Modeled on [omerxx/dotfiles](https://github.com/omerxx/dotfiles) and
+[theRubberDuckiee/dev-environment-files](https://github.com/theRubberDuckiee/dev-environment-files).

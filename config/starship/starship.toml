@@ -1,0 +1,153 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+palette = "arrow"
+command_timeout = 1000
+
+format = """
+[](fg:bg4)$custom$username$hostname[](fg:bg4 bg:blue)$directory[](fg:blue bg:bg3)$git_branch$git_status$git_metrics[](fg:bg3)$fill[](fg:bg4)$time
+$character"""
+
+
+[custom.osicon]
+description = 'OS icon from /etc/os-release (reliable across distros)'
+when = true
+shell = ['/bin/sh']
+command = '''uname -s | grep -q Darwin && printf '󰀵' || { . /etc/os-release 2>/dev/null; case "$NAME" in *[Pp]arrot*) ID=parrot;; esac; case "$ID" in kali) printf '';; parrot) printf '';; ubuntu) printf '󰕈';; debian) printf '󰣚';; arch) printf '󰣇';; fedora) printf '󰣛';; *) printf '󰌽';; esac; }'''
+format = '[ $output ](fg:fg bg:bg4)'
+
+[username]
+show_always = true
+style_user = 'fg:fg bg:bg4'
+style_root = 'fg:red bg:bg4'
+format = '[$user]($style)'
+
+[hostname]
+ssh_only = false
+trim_at = '.'
+format = '[@$hostname ](fg:gray bg:bg4)'
+
+[directory]
+format = '[ 󰉋 $path ](fg:bg bg:blue)'
+truncation_length = 3
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = " "
+format = '[ $symbol$branch ](fg:yellow bg:bg3)'
+
+[git_status]
+format = '[$all_status ](fg:orange bg:bg3)'
+
+[git_metrics]
+disabled = false
+format = '([+$added ](fg:green bg:bg3))([-$deleted ](fg:red bg:bg3))'
+
+[time]
+disabled = false
+time_format = "%a %b %d  %H:%M"
+format = '[ 󱑍 $time ](fg:fg bg:bg4)'
+
+[character]
+success_symbol = '[❯](bold green)'
+error_symbol = '[❯](bold red)'
+vicmd_symbol = '[❮](bold yellow)'
+
+[fill]
+symbol = " "
+
+[palettes.jellybeans]
+bg = "#121212"
+bg1 = "#1c1c1c"
+bg2 = "#262626"
+bg3 = "#2d2d2d"
+bg4 = "#3a3a3a"
+fg = "#dedede"
+gray = "#929292"
+red = "#e27373"
+green = "#94b979"
+yellow = "#ffba7b"
+blue = "#97bedc"
+aqua = "#1ab2a8"
+purple = "#e1c0fa"
+orange = "#ffa560"
+
+[palettes.arrow]
+bg = "#0a0a0a"
+bg1 = "#141414"
+bg2 = "#1c1c1c"
+bg3 = "#242424"
+bg4 = "#313131"
+fg = "#eaeaea"
+gray = "#8a8a8a"
+red = "#ff5f56"
+green = "#3fd07a"
+yellow = "#f5b942"
+blue = "#ff5a2c"
+aqua = "#2dd4bf"
+purple = "#a472ff"
+orange = "#ff7a18"
+
+[palettes.gruvbox]
+bg = "#1d2021"
+bg1 = "#282828"
+bg2 = "#32302f"
+bg3 = "#3c3836"
+bg4 = "#504945"
+fg = "#d4be98"
+gray = "#928374"
+red = "#ea6962"
+green = "#a9b665"
+yellow = "#d8a657"
+blue = "#7daea3"
+aqua = "#89b482"
+purple = "#d3869b"
+orange = "#e78a4e"
+
+[palettes.catppuccin]
+bg = "#1e1e2e"
+bg1 = "#181825"
+bg2 = "#313244"
+bg3 = "#45475a"
+bg4 = "#585b70"
+fg = "#cdd6f4"
+gray = "#6c7086"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+aqua = "#94e2d5"
+purple = "#cba6f7"
+orange = "#fab387"
+
+[palettes.nord]
+bg = "#2e3440"
+bg1 = "#2a2e38"
+bg2 = "#3b4252"
+bg3 = "#434c5e"
+bg4 = "#4c566a"
+fg = "#e5e9f0"
+gray = "#7b88a1"
+red = "#bf616a"
+green = "#a3be8c"
+yellow = "#ebcb8b"
+blue = "#88c0d0"
+aqua = "#8fbcbb"
+purple = "#b48ead"
+orange = "#d08770"
+
+[palettes.tokyonight]
+bg = "#1a1b26"
+bg1 = "#16161e"
+bg2 = "#24283b"
+bg3 = "#2f334d"
+bg4 = "#414868"
+fg = "#c0caf5"
+gray = "#565f89"
+red = "#f7768e"
+green = "#9ece6a"
+yellow = "#e0af68"
+blue = "#7aa2f7"
+aqua = "#7dcfff"
+purple = "#bb9af7"
+orange = "#ff9e64"
