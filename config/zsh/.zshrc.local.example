@@ -1,0 +1,6 @@
+# Copy to ~/.zshrc.local (never committed). Add machine-specific PATH, env, and secrets here.
+
+# export JAVA_HOME="$(/usr/libexec/java_home -v 17 2>/dev/null)"
+# export PATH="/usr/local/go/bin:$HOME/.orbstack/bin:$PATH"
+# export DIGITALOCEAN_ACCESS_TOKEN="..."
+# export HCLOUD_TOKEN="..."
