@@ -3,22 +3,22 @@ themes {
         text_unselected {
             base 232 238 245
             background 0 0 0
-            emphasis_0 45 156 219
+            emphasis_0 47 107 237
             emphasis_1 79 208 138
             emphasis_2 245 196 98
             emphasis_3 157 123 240
         }
         text_selected {
             base 232 238 245
-            background 16 22 31
-            emphasis_0 45 156 219
+            background 16 22 34
+            emphasis_0 47 107 237
             emphasis_1 79 208 138
             emphasis_2 245 196 98
             emphasis_3 157 123 240
         }
         ribbon_selected {
             base 0 0 0
-            background 45 156 219
+            background 47 107 237
             emphasis_0 255 107 107
             emphasis_1 245 196 98
             emphasis_2 157 123 240
@@ -30,10 +30,10 @@ themes {
             emphasis_0 255 107 107
             emphasis_1 232 238 245
             emphasis_2 157 123 240
-            emphasis_3 16 22 31
+            emphasis_3 16 22 34
         }
         table_title {
-            base 45 156 219
+            base 47 107 237
             background 0 0 0
             emphasis_0 255 107 107
             emphasis_1 79 208 138
@@ -42,8 +42,8 @@ themes {
         }
         table_cell_selected {
             base 232 238 245
-            background 16 22 31
-            emphasis_0 45 156 219
+            background 16 22 34
+            emphasis_0 47 107 237
             emphasis_1 79 208 138
             emphasis_2 245 196 98
             emphasis_3 157 123 240
@@ -51,15 +51,15 @@ themes {
         table_cell_unselected {
             base 232 238 245
             background 0 0 0
-            emphasis_0 45 156 219
+            emphasis_0 47 107 237
             emphasis_1 79 208 138
             emphasis_2 245 196 98
             emphasis_3 157 123 240
         }
         list_selected {
             base 232 238 245
-            background 16 22 31
-            emphasis_0 45 156 219
+            background 16 22 34
+            emphasis_0 47 107 237
             emphasis_1 79 208 138
             emphasis_2 245 196 98
             emphasis_3 157 123 240
@@ -67,15 +67,15 @@ themes {
         list_unselected {
             base 232 238 245
             background 0 0 0
-            emphasis_0 45 156 219
+            emphasis_0 47 107 237
             emphasis_1 79 208 138
             emphasis_2 245 196 98
             emphasis_3 157 123 240
         }
         frame_selected {
-            base 45 156 219
+            base 47 107 237
             background 0 0 0
-            emphasis_0 45 156 219
+            emphasis_0 47 107 237
             emphasis_1 79 208 138
             emphasis_2 245 196 98
             emphasis_3 157 123 240
@@ -105,11 +105,11 @@ themes {
             emphasis_3 255 107 107
         }
         multiplayer_user_colors {
-            player_1 45 156 219
+            player_1 47 107 237
             player_2 157 123 240
             player_3 79 208 138
             player_4 245 196 98
-            player_5 54 200 224
+            player_5 44 198 192
             player_6 255 159 90
             player_7 255 107 107
             player_8 122 134 150
