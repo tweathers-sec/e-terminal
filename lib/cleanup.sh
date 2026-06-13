@@ -32,6 +32,9 @@ clean_conflicts() {
 strip_repo_git() {
   [ -e "$DOTFILES_DIR/.git" ] || [ -e "$DOTFILES_DIR/.gitignore" ] || [ -e "$DOTFILES_DIR/.gitmodules" ] || return 0
   if [ -n "${KEEP_GIT:-}" ]; then warn "KEEP_GIT set; leaving git metadata in $(abbrev "$DOTFILES_DIR")"; return 0; fi
+  if [ -z "${DRY_RUN:-}" ] && command -v git >/dev/null 2>&1 && [ -d "$DOTFILES_DIR/.git" ]; then
+    git -C "$DOTFILES_DIR" rev-parse HEAD > "$DOTFILES_DIR/.e-terminal-commit" 2>/dev/null || true
+  fi
   info "Removing git metadata (deployed copy has no remote and can't push to the repo)"
   run rm -rf "$DOTFILES_DIR/.git" "$DOTFILES_DIR/.gitignore" "$DOTFILES_DIR/.gitattributes" \
              "$DOTFILES_DIR/.gitmodules" "$DOTFILES_DIR/.github"

@@ -8,6 +8,9 @@ config/nushell/env.local.nu
 .e-terminal-backup/
 e-terminal-rollback/
 
+# Installed-commit marker (written by the installer, read by e-update)
+.e-terminal-commit
+
 # Editor/agent local state
 .claude/
 
