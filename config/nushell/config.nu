@@ -107,7 +107,13 @@ $env.config.hooks = {
 alias l = ls --all
 alias ll = ls --long
 alias la = ls --all --long
-alias lt = eza --tree --level=2 --long --git
+def lt [...args] {
+  if (($env.TERM? | default "") == "linux") {
+    eza --tree --level=2 --long --git ...$args
+  } else {
+    eza --tree --level=2 --long --icons --git ...$args
+  }
+}
 alias c = clear
 alias v = nvim
 alias gst = git status
