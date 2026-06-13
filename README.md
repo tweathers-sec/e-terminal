@@ -74,7 +74,7 @@ Then:
 | **Packages** | `brew bundle` (Brewfile) | `apt` + official installers/releases (starship, zoxide, eza, nushell, carapace, zellij; handles `batcat`/`fdfind` shims) |
 | **Font** | `font-jetbrains-mono-nerd-font` cask | Nerd Fonts release → `~/.local/share/fonts` + `fc-cache` |
 | **Plugins** | TPM + zsh plugins (git clone) | same |
-| **Configs** | symlinked, with timestamped backups | same |
+| **Configs** | copied into place (no symlinks); your originals saved once for rollback | same |
 | **Root** | links the setup into `/var/root` | links the setup into `/root` |
 | **Shell** | suggests `swapshell` (default: Nushell) | suggests `swapshell` (default: **zsh**) |
 
@@ -291,11 +291,11 @@ Nothing secret lives in this repo. The installer seeds two git-ignored override 
 ## Uninstall / rollback
 
 ```sh
-~/.e-terminal/uninstall.sh        # remove managed symlinks, restore newest backups
+~/.e-terminal/uninstall.sh        # remove installed files, restore your saved originals
 ```
 
-Per-run backups live in `~/.e-terminal-backup/<timestamp>/`. Packages are left installed (manual
-removal hints are printed).
+Your pre-install originals are saved once to `~/.e-terminal-backup/original/` and restored on
+uninstall. Packages are left installed (manual removal hints are printed).
 
 ---
 
