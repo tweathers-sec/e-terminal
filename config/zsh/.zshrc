@@ -75,6 +75,7 @@ cx() {
   if command -v eza >/dev/null 2>&1; then eza -l $i --group-directories-first; else ls -lh; fi
 }
 
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 if (( ! ${+functions[_zsh_highlight]} )) && \
    [ -f "$ETERM_ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
   source "$ETERM_ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
