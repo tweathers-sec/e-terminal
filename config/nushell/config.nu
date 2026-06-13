@@ -92,7 +92,6 @@ $env.config = {
   }
 }
 
-# OSC 9001;ts;HH:MM:SS gives the session viewer the real run time even when the prompt sat idle.
 $env.config.hooks = {
   pre_prompt: [{||
     let esc = (char -u "1b"); let bel = (char -u "07")
@@ -117,7 +116,6 @@ alias gp = git push origin HEAD
 
 def --env cx [path: string] { cd $path; ls --long }
 
-# parse-time const so the path resolves on every OS (macOS uses ~/Library/Application Support)
 const e_scripts = ($nu.default-config-dir | path join "scripts")
 use ($e_scripts | path join "net.nu") *
 use ($e_scripts | path join "sys.nu") *
@@ -129,8 +127,6 @@ use ($e_scripts | path join "commands.nu") *
 source ~/.cache/starship/init.nu
 source ~/.cache/zoxide.nu
 source ~/.cache/carapace/init.nu
-source ~/.cache/atuin/init.nu
 
-# Without these, nu appends ': '/'> ' in vi mode, doubling starship's prompt character.
 $env.PROMPT_INDICATOR_VI_INSERT = ""
 $env.PROMPT_INDICATOR_VI_NORMAL = ""

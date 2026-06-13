@@ -1,5 +1,4 @@
 
-# exec into e-session-log before PATH is set; E_SESSION_LOG_ACTIVE prevents re-entry.
 if [[ -z "${E_SESSION_LOG_ACTIVE:-}" && -z "${TMUX:-}" && -o interactive ]]; then
   for _eslog in "$HOME/.local/bin/e-session-log" /usr/local/bin/e-session-log; do
     [[ -x "$_eslog" ]] && exec "$_eslog" start "${commands[zsh]:-/bin/zsh}"
@@ -15,8 +14,10 @@ setopt EXTENDED_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_DUPS \
 setopt AUTO_PUSHD PUSHD_IGNORE_DUPS
 bindkey -e
 
-# sbin included: Debian drops it for non-root users but ifconfig/ip/ss live there
+[[ "$OSTYPE" == darwin* && -x /usr/libexec/path_helper ]] && eval "$(/usr/libexec/path_helper -s)"
+
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+typeset -U path PATH
 
 autoload -Uz compinit && compinit -C
 
@@ -36,9 +37,6 @@ if command -v fzf >/dev/null 2>&1; then
     done
   fi
 fi
-command -v atuin >/dev/null 2>&1 && eval "$(atuin init zsh --disable-up-arrow)"
-
-# Guard each plugin: double-loading wraps ZLE self-insert twice, causing doubled keystrokes.
 ETERM_ZSH_PLUGINS="$HOME/.local/share/e-terminal/zsh-plugins"
 if (( ! ${+functions[_zsh_autosuggest_start]} )) && \
    [ -f "$ETERM_ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
@@ -49,7 +47,6 @@ if (( ! ${+functions[history-substring-search-up]} )) && \
   source "$ETERM_ZSH_PLUGINS/zsh-history-substring-search/zsh-history-substring-search.zsh"
 fi
 
-# Bind all up/down escape variants (normal, application-cursor, terminfo) for cross-terminal compat.
 zmodload zsh/terminfo 2>/dev/null
 for _k in '^[[A' '^[OA' "${terminfo[kcuu1]:-}"; do [ -n "$_k" ] && bindkey "$_k" history-substring-search-up; done
 for _k in '^[[B' '^[OB' "${terminfo[kcud1]:-}"; do [ -n "$_k" ] && bindkey "$_k" history-substring-search-down; done
@@ -57,7 +54,6 @@ unset _k
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
-# Linux ships bat as batcat and fd as fdfind (shims also created by installer)
 command -v batcat >/dev/null 2>&1 && ! command -v bat >/dev/null 2>&1 && alias bat='batcat'
 command -v fdfind >/dev/null 2>&1 && ! command -v fd  >/dev/null 2>&1 && alias fd='fdfind'
 if command -v eza >/dev/null 2>&1; then
@@ -80,7 +76,6 @@ if (( ! ${+functions[_zsh_highlight]} )) && \
   source "$ETERM_ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
-# Redraw on accept so Starship's $time shows the run time, not when the prompt was rendered.
 _eterm_accept_line() { zle reset-prompt; zle .accept-line; }
 zle -N accept-line _eterm_accept_line
 
@@ -96,7 +91,6 @@ if [[ -n "${E_PROMPT_CLOCK:-}" ]]; then
   }
 fi
 
-# OSC 133 boundaries + OSC 9001 timestamps so the session viewer gets per-command real run times.
 zmodload zsh/datetime 2>/dev/null
 autoload -Uz add-zsh-hook
 _eterm_osc_precmd()  { local e=$?; print -rn -- $'\e]133;D;'"$e"$'\a\e]133;A\a'; }

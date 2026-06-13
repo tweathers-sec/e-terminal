@@ -1,4 +1,3 @@
-# NOT named `help`: shadowing the built-in breaks `<command> --help` everywhere.
 const E_COMMANDS = [
   [group     command      usage                          description];
   [network   ifconfig     "[-a|--ipv6|-r] [adapter..]"   "host adapter table (active by default; -a all, -r raw)"]

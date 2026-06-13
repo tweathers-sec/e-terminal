@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+set -eu
+
+REPO_SLUG="${E_TERMINAL_REPO:-tweathers-sec/e-terminal}"
+REPO_URL="${E_TERMINAL_REPO_URL:-https://github.com/${REPO_SLUG}.git}"
+DEST="${E_TERMINAL_HOME:-$HOME/.e-terminal}"
+
+if [ "${E_UPDATE_STAGE:-}" != run ]; then
+  self="$(command -v "$0" 2>/dev/null || true)"; [ -n "$self" ] || self="$0"
+  tmp="$(mktemp -d)"
+  cp "$self" "$tmp/e-update"
+  E_UPDATE_STAGE=run E_UPDATE_TMP="$tmp" exec sh "$tmp/e-update" "$@"
+fi
+
+tmp="$E_UPDATE_TMP"
+trap 'rm -rf "$tmp"' EXIT
+command -v git >/dev/null 2>&1 || { echo "e-update: git is required" >&2; exit 1; }
+
+echo "e-update: fetching latest ($REPO_URL)"
+git clone --depth 1 "$REPO_URL" "$tmp/src" || { echo "e-update: fetch failed" >&2; exit 1; }
+[ -f "$tmp/src/install.sh" ] || { echo "e-update: bad checkout (no install.sh)" >&2; exit 1; }
+
+echo "e-update: refreshing $DEST"
+rm -rf "$DEST"
+mkdir -p "$DEST"
+cp -R "$tmp/src/." "$DEST/"
+
+echo "e-update: re-running installer"
+bash "$DEST/install.sh" "$@"
+echo "e-update: done — open a new terminal to load changes"

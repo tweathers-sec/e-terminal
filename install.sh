@@ -4,20 +4,14 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export DOTFILES_DIR
 
-# shellcheck source=lib/common.sh
 source "$DOTFILES_DIR/lib/common.sh"
-# shellcheck source=lib/symlink.sh
 source "$DOTFILES_DIR/lib/symlink.sh"
-# shellcheck source=lib/cleanup.sh
 source "$DOTFILES_DIR/lib/cleanup.sh"
-# shellcheck source=lib/root.sh
 source "$DOTFILES_DIR/lib/root.sh"
-# shellcheck source=lib/packages.sh
 source "$DOTFILES_DIR/lib/packages.sh"
-# shellcheck source=lib/font.sh
 source "$DOTFILES_DIR/lib/font.sh"
-# shellcheck source=lib/plugins.sh
 source "$DOTFILES_DIR/lib/plugins.sh"
+source "$DOTFILES_DIR/lib/paths.sh"
 
 link_configs() {
   info "Linking configs"
@@ -31,7 +25,6 @@ link_configs() {
   symlink_with_backup "$C/tmux/tmux.reset.conf"     "$HOME/.config/tmux/tmux.reset.conf"
   symlink_with_backup "$C/tmux/scripts"             "$HOME/.config/tmux/scripts"
   symlink_with_backup "$C/tmux/themes"              "$HOME/.config/tmux/themes"
-  # zellij themes are additive; config.kdl is left untouched except for a default theme line
   symlink_with_backup "$C/zellij/themes"            "$HOME/.config/zellij/themes"
   local NU_DIR; NU_DIR="$(nu_config_dir)"
   symlink_with_backup "$C/nushell/config.nu"        "$NU_DIR/config.nu"
@@ -39,10 +32,11 @@ link_configs() {
   symlink_with_backup "$C/nushell/scripts"          "$NU_DIR/scripts"
 
   run mkdir -p "$HOME/.local/bin"
-  run chmod +x "$C/bin/swapshell" "$C/bin/e-session-log" "$C/bin/theme" "$C/tmux/scripts/"*.sh 2>/dev/null || true
+  run chmod +x "$C/bin/swapshell" "$C/bin/e-session-log" "$C/bin/theme" "$C/bin/e-update" "$C/tmux/scripts/"*.sh 2>/dev/null || true
   symlink_with_backup "$C/bin/swapshell"            "$HOME/.local/bin/swapshell"
   symlink_with_backup "$C/bin/e-session-log"        "$HOME/.local/bin/e-session-log"
   symlink_with_backup "$C/bin/theme"                "$HOME/.local/bin/theme"
+  symlink_with_backup "$C/bin/e-update"             "$HOME/.local/bin/e-update"
   _esv_os="$(uname -s | tr 'A-Z' 'a-z')"
   case "$(uname -m)" in x86_64|amd64) _esv_arch=amd64 ;; aarch64|arm64) _esv_arch=arm64 ;; *) _esv_arch="" ;; esac
   if [ -n "$_esv_arch" ]; then
@@ -69,10 +63,6 @@ seed_local() {
 }
 
 import_history() {
-  if has atuin; then
-    info "Importing shell history into atuin"
-    run atuin import auto || warn "atuin import had issues (continuing)"
-  fi
   local zsh_hist="$HOME/.zsh_history" nu_hist; nu_hist="$(nu_config_dir)/history.txt"
   [ -f "$zsh_hist" ] || return 0
   local lines; lines="$( [ -f "$nu_hist" ] && wc -l < "$nu_hist" 2>/dev/null || echo 0 )"
@@ -94,8 +84,6 @@ import_history() {
   fi
 }
 
-# Sets the login shell to the per-OS default (nushell, or zsh on Kali/Parrot). Opt out with
-# SKIP_SHELL_CHANGE=1.
 set_default_shell() {
   local pref path user cur
   pref="$(preferred_shell)"
@@ -140,13 +128,16 @@ main() {
   install_packages
   install_nerd_font
   install_plugins
+  capture_user_config
   clean_conflicts
   link_configs
+  apply_user_config
   install_tmux_plugins
   install_root
   import_history
   set_default_shell
   post_install_notes
+  strip_repo_git
 
   info "Done."
 }

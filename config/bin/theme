@@ -73,8 +73,8 @@ case "${1:-}" in
   -h|--help) sed -n '3,12p' "$SELF" | sed 's/^# \{0,1\}//'; exit 0 ;;
   list) themes; exit 0 ;;
   current) current; exit 0 ;;
-  __preview) preview "${2:-}"; exit 0 ;;   # internal: used by the fzf preview pane
-  __apply)   apply "${2:-}"; exit $? ;;     # internal: used by the fzf live-preview bind
+  __preview) preview "${2:-}"; exit 0 ;;
+  __apply)   apply "${2:-}"; exit $? ;;
   "") ;;
   *) apply "$1" && echo "theme: applied '$1'"; exit $? ;;
 esac
@@ -96,6 +96,6 @@ if [ -n "${pick:-}" ]; then
   apply "$pick"
   echo "theme: applied '$pick'"
 else
-  apply "$orig" >/dev/null 2>&1   # cancelled: revert the live preview
+  apply "$orig" >/dev/null 2>&1
   echo "theme: kept '$orig'"
 fi

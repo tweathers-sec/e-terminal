@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# Frameworks like oh-my-zsh / prezto / zinit hook the same ZLE widgets and prompt that
-# the e-terminal .zshrc + Starship own. Leaving a framework on disk risks double-loads
-# (e.g. a stray `source $ZSH/oh-my-zsh.sh` in a machine-local file), which wraps
-# `self-insert` twice and causes doubled keystrokes. Conflicts are moved into the
-# per-run backup dir (reversible), never hard-deleted.
 
 quarantine() {
   local target="$1" label="$2"
@@ -32,4 +27,13 @@ clean_conflicts() {
   quarantine "$HOME/.antigen.zsh"   "antigen"
   quarantine "$HOME/.p10k.zsh"      "powerlevel10k config"
   ok "conflict scan complete"
+}
+
+strip_repo_git() {
+  [ -e "$DOTFILES_DIR/.git" ] || [ -e "$DOTFILES_DIR/.gitignore" ] || [ -e "$DOTFILES_DIR/.gitmodules" ] || return 0
+  if [ -n "${KEEP_GIT:-}" ]; then warn "KEEP_GIT set; leaving git metadata in $(abbrev "$DOTFILES_DIR")"; return 0; fi
+  info "Removing git metadata (deployed copy has no remote and can't push to the repo)"
+  run rm -rf "$DOTFILES_DIR/.git" "$DOTFILES_DIR/.gitignore" "$DOTFILES_DIR/.gitattributes" \
+             "$DOTFILES_DIR/.gitmodules" "$DOTFILES_DIR/.github"
+  ok "git metadata removed from $(abbrev "$DOTFILES_DIR")"
 }

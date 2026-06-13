@@ -9,7 +9,7 @@ terminal - themed prompt, status bar, multiplexer, and a cross-platform command 
 with zero manual tweaking.
 
 ```sh
-gh repo clone tweathers-sec/e-terminal ~/.e-terminal && ~/.e-terminal/install.sh
+git clone https://github.com/tweathers-sec/e-terminal.git ~/.e-terminal && ~/.e-terminal/install.sh
 ```
 
 <img src="images/hero_nushell.png" alt="e-terminal: the arrow-themed prompt running a structured ifconfig" width="900">
@@ -47,9 +47,13 @@ gh repo clone tweathers-sec/e-terminal ~/.e-terminal && ~/.e-terminal/install.sh
 
 ```sh
 # 1. Clone + install (idempotent - safe to re-run)
-gh repo clone tweathers-sec/e-terminal ~/.e-terminal
+git clone https://github.com/tweathers-sec/e-terminal.git ~/.e-terminal
 ~/.e-terminal/install.sh
 ```
+
+The install strips git metadata from `~/.e-terminal`, so the deployed copy has no remote
+and can't push back to the repo. To update later, run `e-update` — it re-fetches the latest
+from GitHub and re-runs the installer.
 
 Then:
 
@@ -67,12 +71,12 @@ Then:
 
 | Step | macOS | Debian / Ubuntu / Kali / Parrot |
 |------|-------|---------------------------------|
-| **Packages** | `brew bundle` (Brewfile) | `apt` + official installers/releases (starship, zoxide, atuin, eza, nushell, carapace, zellij; handles `batcat`/`fdfind` shims) |
+| **Packages** | `brew bundle` (Brewfile) | `apt` + official installers/releases (starship, zoxide, eza, nushell, carapace, zellij; handles `batcat`/`fdfind` shims) |
 | **Font** | `font-jetbrains-mono-nerd-font` cask | Nerd Fonts release → `~/.local/share/fonts` + `fc-cache` |
 | **Plugins** | TPM + zsh plugins (git clone) | same |
 | **Configs** | symlinked, with timestamped backups | same |
 | **Root** | links the setup into `/var/root` | links the setup into `/root` |
-| **Shell** | suggests `swapshell` (default: Nushell) | suggests `swapshell` (default: **zsh** on Kali/Parrot, Nushell elsewhere) |
+| **Shell** | suggests `swapshell` (default: Nushell) | suggests `swapshell` (default: **zsh**) |
 
 ---
 
@@ -84,9 +88,9 @@ Then:
 | **[Starship](https://starship.rs)** | Prompt - one two-line powerline, identical in Nushell and zsh. |
 | **[tmux](https://github.com/tmux/tmux)** | Default multiplexer - `Ctrl-a` prefix, themed 3-zone status bar, sessionx/floax/resurrect/thumbs. |
 | **[zellij](https://zellij.dev)** | Optional alternative multiplexer (alongside tmux) - themed to match. Launch with `zellij`. |
-| **[Nushell](https://nushell.sh)** | Default shell (except Kali/Parrot) - structured data, vi mode, carapace completions, atuin `Ctrl-R`. |
-| **zsh** | Universal fallback (default on Kali/Parrot) - autosuggestions, syntax highlighting, history-substring search, atuin. |
-| **Toolbelt** | fzf · zoxide · atuin · eza · bat · fd · ripgrep · carapace |
+| **[Nushell](https://nushell.sh)** | Default shell on macOS - structured data, vi mode, carapace completions. |
+| **zsh** | Default shell on Linux - autosuggestions, syntax highlighting, history-substring search. |
+| **Toolbelt** | fzf · zoxide · eza · bat · fd · ripgrep · carapace |
 
 The **prompt is identical in Nushell and zsh** by design, so switching shells never changes how
 things look.
@@ -170,7 +174,8 @@ works too.
 | `weather [city]` · `psg <pat>` · `killp` | `wttr.in` one-liner; process search; fuzzy-pick-and-kill. |
 
 Plus the helpers on `PATH`: **`swapshell`** (change default shell), **`theme`** (switch theme),
-**`e-session-log`** (session logging), **`rootsh`** (styled root).
+**`e-session-log`** (session logging), **`e-update`** (update to the latest from GitHub),
+**`rootsh`** (styled root).
 
 ---
 
@@ -218,8 +223,10 @@ tables and long output render faithfully.
 
 ```sh
 swapshell               # fzf-pick a shell, set it as the OS login shell, and start it now
+swapshell zsh           # set the default directly (also: bash, nu, fish, or a full path)
 swapshell --no-launch   # set the default only
 swapshell --here        # start a shell for this session only (no default change)
+swapshell --here zsh    # start zsh for this session only (no default change)
 ```
 
 It sets the **OS login shell** with `chsh` (your own password - not sudo), so the change applies to
