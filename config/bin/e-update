@@ -31,5 +31,5 @@ git clone --depth 1 "$REPO_URL" "$tmp/src" || { echo "e-update: fetch failed" >&
 [ -f "$tmp/src/install.sh" ] || { echo "e-update: bad checkout (no install.sh)" >&2; exit 1; }
 
 echo "e-update: installing"
-bash "$tmp/src/install.sh"
+SKIP_ROOT=1 SKIP_SHELL_CHANGE=1 SKIP_BREW=1 SKIP_APT=1 HOMEBREW_NO_AUTO_UPDATE=1 bash "$tmp/src/install.sh"
 echo "e-update: done — open a new terminal to load changes"
