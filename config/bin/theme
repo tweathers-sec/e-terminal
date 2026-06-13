@@ -7,6 +7,7 @@ TMUX_ACTIVE="$HOME/.config/tmux/theme.conf"
 ZELLIJ_DIR="${ZELLIJ_CONFIG_DIR:-$HOME/.config/zellij}"
 ZELLIJ_CONF="$ZELLIJ_DIR/config.kdl"
 ZELLIJ_THEMES="$ZELLIJ_DIR/themes"
+ECONF="${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal"
 SELF="$0"
 
 themes() { ls "$THEMES_DIR" 2>/dev/null | sed -n 's/\.conf$//p'; }
@@ -14,6 +15,19 @@ exists() { [ -f "$THEMES_DIR/$1.conf" ]; }
 current() { sed -n 's/^palette = "\(.*\)"/\1/p' "$STARSHIP" 2>/dev/null | head -1; }
 
 thm() { sed -n 's/^set -g @thm_'"$2"' "\(#[0-9a-fA-F]*\)".*/\1/p' "$THEMES_DIR/$1.conf" 2>/dev/null | head -1; }
+
+sgr() { h=${1#\#}; v=$((0x$h)); printf '38;2;%d;%d;%d' $(( (v>>16)&255 )) $(( (v>>8)&255 )) $(( v&255 )); }
+
+write_output() {
+  n=$1; exists "$n" || return 0
+  acc=$(thm "$n" accent); aq=$(thm "$n" aqua); yel=$(thm "$n" yellow); fg=$(thm "$n" fg); gray=$(thm "$n" gray)
+  [ -n "$acc" ] && [ -n "$gray" ] || return 0
+  dir=$(sgr "$acc"); lnk=$(sgr "$aq"); exe=$(sgr "$yel"); file=$(sgr "$fg"); mut=$(sgr "$gray")
+  mkdir -p "$ECONF"
+  printf 'di=1;%s:ex=%s:ln=%s:lp=%s:fi=%s:ur=%s:uw=%s:ux=%s:gr=%s:gw=%s:gx=%s:tr=%s:tw=%s:tx=%s:sn=%s:sb=%s:uu=%s:gu=%s:da=%s:xx=%s' \
+    "$dir" "$exe" "$lnk" "$lnk" "$file" "$mut" "$mut" "$exe" "$mut" "$mut" "$mut" "$mut" "$mut" "$mut" "$file" "$mut" "$mut" "$mut" "$mut" "$mut" \
+    > "$ECONF/eza-colors"
+}
 
 block() {
   h=$1; t=$2; r=$((0x${h#\#}))
@@ -67,6 +81,7 @@ apply() {
       printf 'theme "%s"\n' "$n" >> "$ZELLIJ_CONF"
     fi
   fi
+  write_output "$n"
 }
 
 case "${1:-}" in
@@ -75,6 +90,7 @@ case "${1:-}" in
   current) current; exit 0 ;;
   __preview) preview "${2:-}"; exit 0 ;;
   __apply)   apply "${2:-}"; exit $? ;;
+  __output)  n="${2:-}"; [ -n "$n" ] || n="$(current)"; [ -n "$n" ] || n=arrow; write_output "$n"; exit 0 ;;
   "") ;;
   *) apply "$1" && echo "theme: applied '$1'"; exit $? ;;
 esac

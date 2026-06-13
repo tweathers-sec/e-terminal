@@ -53,6 +53,7 @@ link_configs() {
     local zc="$HOME/.config/zellij/config.kdl"; mkdir -p "$HOME/.config/zellij"; [ -f "$zc" ] || : > "$zc"
     grep -qE '^[[:space:]]*theme[[:space:]]+"' "$zc" || { printf 'theme "arrow"\n' >> "$zc"; ok "zellij theme set to arrow"; }
   fi
+  [ -z "${DRY_RUN:-}" ] && sh "$C/bin/theme" __output >/dev/null 2>&1 && ok "themed command output (eza colors)" || true
 }
 
 seed_local() {

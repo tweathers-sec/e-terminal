@@ -102,4 +102,10 @@ _eterm_osc_preexec() { print -rn -- $'\e]133;C\a\e]9001;ts;'"$(strftime '%H:%M' 
 add-zsh-hook precmd  _eterm_osc_precmd
 add-zsh-hook preexec _eterm_osc_preexec
 
+_eterm_eza_theme() {
+  local f="${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/eza-colors"
+  [[ -s "$f" ]] && export EZA_COLORS="$(<"$f")"
+}
+add-zsh-hook precmd _eterm_eza_theme
+
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
