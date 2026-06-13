@@ -2,39 +2,39 @@ themes {
     radon {
         text_unselected {
             base 234 240 230
-            background 12 15 18
-            emphasis_0 207 230 34
+            background 11 16 36
+            emphasis_0 212 242 58
             emphasis_1 122 208 122
             emphasis_2 232 212 74
             emphasis_3 164 114 255
         }
         text_selected {
             base 234 240 230
-            background 24 30 37
-            emphasis_0 207 230 34
+            background 21 29 64
+            emphasis_0 212 242 58
             emphasis_1 122 208 122
             emphasis_2 232 212 74
             emphasis_3 164 114 255
         }
         ribbon_selected {
-            base 12 15 18
-            background 207 230 34
+            base 11 16 36
+            background 212 242 58
             emphasis_0 255 95 86
             emphasis_1 232 212 74
             emphasis_2 164 114 255
             emphasis_3 234 240 230
         }
         ribbon_unselected {
-            base 12 15 18
-            background 138 147 160
+            base 11 16 36
+            background 133 144 181
             emphasis_0 255 95 86
             emphasis_1 234 240 230
             emphasis_2 164 114 255
-            emphasis_3 24 30 37
+            emphasis_3 21 29 64
         }
         table_title {
-            base 207 230 34
-            background 12 15 18
+            base 212 242 58
+            background 11 16 36
             emphasis_0 255 95 86
             emphasis_1 122 208 122
             emphasis_2 232 212 74
@@ -42,47 +42,47 @@ themes {
         }
         table_cell_selected {
             base 234 240 230
-            background 24 30 37
-            emphasis_0 207 230 34
+            background 21 29 64
+            emphasis_0 212 242 58
             emphasis_1 122 208 122
             emphasis_2 232 212 74
             emphasis_3 164 114 255
         }
         table_cell_unselected {
             base 234 240 230
-            background 12 15 18
-            emphasis_0 207 230 34
+            background 11 16 36
+            emphasis_0 212 242 58
             emphasis_1 122 208 122
             emphasis_2 232 212 74
             emphasis_3 164 114 255
         }
         list_selected {
             base 234 240 230
-            background 24 30 37
-            emphasis_0 207 230 34
+            background 21 29 64
+            emphasis_0 212 242 58
             emphasis_1 122 208 122
             emphasis_2 232 212 74
             emphasis_3 164 114 255
         }
         list_unselected {
             base 234 240 230
-            background 12 15 18
-            emphasis_0 207 230 34
+            background 11 16 36
+            emphasis_0 212 242 58
             emphasis_1 122 208 122
             emphasis_2 232 212 74
             emphasis_3 164 114 255
         }
         frame_selected {
-            base 207 230 34
-            background 12 15 18
-            emphasis_0 207 230 34
+            base 212 242 58
+            background 11 16 36
+            emphasis_0 212 242 58
             emphasis_1 122 208 122
             emphasis_2 232 212 74
             emphasis_3 164 114 255
         }
         frame_highlight {
             base 255 158 100
-            background 12 15 18
+            background 11 16 36
             emphasis_0 255 158 100
             emphasis_1 255 158 100
             emphasis_2 255 158 100
@@ -90,7 +90,7 @@ themes {
         }
         exit_code_success {
             base 122 208 122
-            background 12 15 18
+            background 11 16 36
             emphasis_0 122 208 122
             emphasis_1 122 208 122
             emphasis_2 122 208 122
@@ -98,21 +98,21 @@ themes {
         }
         exit_code_error {
             base 255 95 86
-            background 12 15 18
+            background 11 16 36
             emphasis_0 255 95 86
             emphasis_1 255 95 86
             emphasis_2 255 95 86
             emphasis_3 255 95 86
         }
         multiplayer_user_colors {
-            player_1 207 230 34
+            player_1 212 242 58
             player_2 164 114 255
             player_3 122 208 122
             player_4 232 212 74
-            player_5 60 131 243
+            player_5 58 107 255
             player_6 255 158 100
             player_7 255 95 86
-            player_8 138 147 160
+            player_8 133 144 181
         }
     }
 }
