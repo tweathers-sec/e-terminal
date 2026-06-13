@@ -82,6 +82,7 @@ apply() {
     fi
   fi
   write_output "$n"
+  mkdir -p "$ECONF"; printf '%s\n' "$n" > "$ECONF/theme"
 }
 
 case "${1:-}" in

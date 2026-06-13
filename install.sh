@@ -16,7 +16,8 @@ source "$DOTFILES_DIR/lib/paths.sh"
 link_configs() {
   info "Installing configs"
   local C="$DOTFILES_DIR/config"
-  local prev_theme; prev_theme="$(sed -n 's/^palette = "\(.*\)"/\1/p' "$HOME/.config/starship.toml" 2>/dev/null | head -1)"
+  local prev_theme; prev_theme="$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/theme" 2>/dev/null || true)"
+  [ -n "$prev_theme" ] || prev_theme="$(sed -n 's/^palette = "\(.*\)"/\1/p' "$HOME/.config/starship.toml" 2>/dev/null | head -1)"
 
   install_path "$C/zsh/.zshrc"               "$HOME/.zshrc"
   install_path "$C/starship/starship.toml"   "$HOME/.config/starship.toml"
@@ -106,9 +107,13 @@ import_history() {
 }
 
 set_default_shell() {
-  local pref path user cur
-  pref="$(preferred_shell)"
-  path="$(command -v "$pref" 2>/dev/null)"
+  local pref path user cur stored
+  stored="$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/shell" 2>/dev/null || true)"
+  if [ -n "$stored" ] && [ -x "$stored" ]; then
+    path="$stored"; pref="$(basename "$stored")"
+  else
+    pref="$(preferred_shell)"; path="$(command -v "$pref" 2>/dev/null)"
+  fi
   user="$(id -un)"
   cur="$(login_shell)"
   info "Default shell"

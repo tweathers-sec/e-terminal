@@ -116,6 +116,8 @@ if ! chsh -s "$choice"; then
   fail "chsh didn't complete; default still $current. Retry: ${BOLD}chsh -s $choice${RESET}"
   exit 1
 fi
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal" 2>/dev/null
+printf '%s\n' "$choice" > "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/shell"
 
 printf '\n%s✓%s %sdefault shell changed%s  %s→%s  %s%s%s\n' \
   "$GREEN" "$RESET" "$BOLD" "$RESET" "$GRAY" "$RESET" "$BOLD$GREEN" "$choice" "$RESET"
