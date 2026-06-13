@@ -36,7 +36,6 @@ install_packages_apt() {
 
   ensure_starship
   ensure_zoxide
-  ensure_atuin
   ensure_eza
   ensure_nushell
   ensure_carapace
@@ -53,7 +52,6 @@ apt_install() {
   run sudo apt-get install -y "${pkgs[@]}"
 }
 
-# Debian/Ubuntu/Kali ship bat as batcat and fd as fdfind.
 link_bat_fd_shims() {
   run mkdir -p "$HOME/.local/bin"
   if has batcat && ! has bat; then run ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"; ok "shim bat -> batcat"; fi
@@ -70,12 +68,6 @@ ensure_zoxide() {
   if has zoxide; then ok "zoxide present"; return 0; fi
   info "Installing zoxide"
   run sh -c "curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
-}
-
-ensure_atuin() {
-  if has atuin; then ok "atuin present"; return 0; fi
-  info "Installing atuin"
-  run sh -c "curl -fsSL https://setup.atuin.sh | sh"
 }
 
 ensure_eza() {
@@ -138,7 +130,6 @@ ensure_carapace() {
   fi
 }
 
-# zellij asset names use x86_64/aarch64, not amd64/arm64, so it gets its own installer.
 ensure_zellij() {
   if has zellij; then ok "zellij present"; return 0; fi
   info "Installing zellij"

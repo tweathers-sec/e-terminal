@@ -30,7 +30,6 @@ install_plugins() {
   install_tpm
 }
 
-# Must be called AFTER configs are symlinked so tpm can read the plugin list from tmux.conf.
 install_tmux_plugins() {
   if [ -n "${SKIP_PLUGINS:-}" ] || [ -n "${SKIP_TMUX_PLUGINS:-}" ]; then return 0; fi
   [ -x "$TPM_DIR/bin/install_plugins" ] || { warn "TPM not present; run 'prefix + I' in tmux"; return 0; }

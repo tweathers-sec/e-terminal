@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-FONT_TARBALL="JetBrainsMono"   # Nerd Fonts release asset name (JetBrainsMono.tar.xz)
+FONT_TARBALL="JetBrainsMono"
 
 font_installed() {
   if has fc-list; then

@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-HERE=0; NO_LAUNCH=0
-case "${1:-}" in
-  --here)       HERE=1 ;;
-  --no-launch)  NO_LAUNCH=1 ;;
-  -h|--help)    sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-  "") ;;
-  *) echo "swapshell: unknown option '$1' (try --help)" >&2; exit 2 ;;
-esac
+HERE=0; NO_LAUNCH=0; TARGET=""
+for arg in "$@"; do
+  case "$arg" in
+    --here)       HERE=1 ;;
+    --no-launch)  NO_LAUNCH=1 ;;
+    -h|--help)    sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -*)           echo "swapshell: unknown option '$arg' (try --help)" >&2; exit 2 ;;
+    *)            if [ -z "$TARGET" ]; then TARGET="$arg"; else echo "swapshell: too many arguments (try --help)" >&2; exit 2; fi ;;
+  esac
+done
+[ -n "$TARGET" ] && [ "$HERE" -eq 0 ] && NO_LAUNCH=1
 
 if [ -z "${NO_COLOR:-}" ] && [ -t 1 ]; then
   RESET=$'\033[0m'; BOLD=$'\033[1m'; DIM=$'\033[2m'
@@ -65,8 +68,17 @@ done
 [ "${#shells[@]}" -gt 0 ] || { fail "no shells found"; exit 1; }
 
 label() { [ "$1" = "$current" ] && printf '%s  (current default)\n' "$1" || printf '%s\n' "$1"; }
+resolve_shell() {
+  case "$1" in
+    /*) [ -x "$1" ] && printf '%s\n' "$1" ;;
+    *)  command -v "$1" 2>/dev/null ;;
+  esac
+}
 choice=""
-if command -v fzf >/dev/null 2>&1 && [ -r /dev/tty ]; then
+if [ -n "$TARGET" ]; then
+  choice="$(resolve_shell "$TARGET")"
+  [ -n "${choice:-}" ] || { fail "shell not found: $TARGET (try: nu, zsh, bash, fish, or a full path)"; exit 1; }
+elif command -v fzf >/dev/null 2>&1 && [ -r /dev/tty ]; then
   choice="$(for s in "${shells[@]}"; do label "$s"; done \
     | fzf --prompt="shell > " --height=40% --reverse --border \
           --header="select default shell (current: $current)" \

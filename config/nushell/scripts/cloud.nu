@@ -1,4 +1,3 @@
-# An unconfigured CLI may print a JSON error object; only return actual list/table.
 def json-list [out: string] {
   let v = (try { $out | from json } catch { [] })
   if (($v | describe) =~ '^(list|table)') { $v } else { [] }

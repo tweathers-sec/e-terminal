@@ -3,7 +3,6 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export DOTFILES_DIR
-# shellcheck source=lib/common.sh
 source "$DOTFILES_DIR/lib/common.sh"
 
 NU_DIR="$(nu_config_dir)"
@@ -23,6 +22,7 @@ MANAGED=(
   "$HOME/.local/bin/e-session-rec"
   "$HOME/.local/bin/e-session-view"
   "$HOME/.local/bin/theme"
+  "$HOME/.local/bin/e-update"
 )
 
 latest_backup() {
@@ -50,7 +50,7 @@ main() {
   done
 
   local t
-  for b in swapshell e-session-log e-session-rec e-session-view theme; do
+  for b in swapshell e-session-log e-session-rec e-session-view theme e-update; do
     t="/usr/local/bin/$b"
     [ -L "$t" ] || continue
     case "$(readlink "$t")" in
@@ -70,7 +70,7 @@ main() {
 
   info "Packages left installed (remove manually if desired)"
   if [ "$OS" = macos ]; then
-    log "  brew uninstall starship fzf zoxide atuin eza bat fd nushell carapace tmux"
+    log "  brew uninstall starship fzf zoxide eza bat fd nushell carapace tmux"
     log "  brew uninstall --cask font-jetbrains-mono-nerd-font"
   else
     log "  sudo apt-get remove starship fzf zoxide eza bat fd-find nushell tmux  # plus ~/.local/bin installs"

@@ -31,14 +31,12 @@ run() {
   fi
 }
 
-# parrot is checked before debian because Parrot's ID_LIKE is "debian".
 detect_os() {
   case "$(uname -s)" in
     Darwin) OS=macos; PKG=brew ;;
     Linux)
       OS=debian; PKG=apt
       if [ -r /etc/os-release ]; then
-        # shellcheck disable=SC1091
         . /etc/os-release
         case " ${ID:-} ${ID_LIKE:-} " in
           *parrot*) OS=parrot ;;
@@ -55,8 +53,8 @@ detect_os() {
 
 preferred_shell() {
   case "$OS" in
-    kali|parrot) echo zsh ;;
-    *)           echo nu ;;
+    macos) echo nu ;;
+    *)     echo zsh ;;
   esac
 }
 
@@ -68,11 +66,8 @@ login_shell() {
   fi
 }
 
-# File where the installer records the pre-change login shell, so uninstall can revert it.
 orig_shell_file() { echo "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/login-shell.orig"; }
 
-# macOS uses ~/Library/Application Support/nushell (NOT ~/.config/nushell) unless
-# XDG_CONFIG_HOME is set; symlinking elsewhere means nu silently loads empty defaults.
 nu_config_dir() {
   if [ -n "${XDG_CONFIG_HOME:-}" ]; then
     printf '%s/nushell' "$XDG_CONFIG_HOME"

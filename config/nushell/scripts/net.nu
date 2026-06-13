@@ -103,10 +103,10 @@ def active? [r] {
 }
 
 export def ifconfig [
-  --raw (-r)           # passthrough: the full, unfiltered system `ifconfig` output
-  --all (-a)           # every adapter, including down / address-less ones
-  --ipv6               # add the IPv6 column
-  ...adapters: string  # limit to these interface names (e.g. en0 lo0)
+  --raw (-r)
+  --all (-a)
+  --ipv6
+  ...adapters: string
 ] {
   if $raw {
     let out = (if (($nu.os-info.name == 'macos') or (which ifconfig | is-not-empty)) {
@@ -184,7 +184,7 @@ def parse-lsof [raw: string, proto: string] {
         address: ($m.addr.0? | default $r.name)
         port:    ($m.port.0? | default '0' | into int)
         pid:     ($r.pid | into int)
-        process: ($r.process | str replace --all '\x20' ' ')  # lsof escapes spaces
+        process: ($r.process | str replace --all '\x20' ' ')
         user:    $r.user
       }
     }

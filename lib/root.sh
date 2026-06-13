@@ -23,7 +23,6 @@ link_user_configs() {
   run sudo ln -sfn "$C/zellij/themes"          "$home/.config/zellij/themes"
   run sudo mkdir -p "$home/.local/share/e-terminal"
   run sudo ln -sfn "$HOME/.local/share/e-terminal/zsh-plugins" "$home/.local/share/e-terminal/zsh-plugins"
-  # -n = don't clobber existing; seeds empty overrides so env.nu/.zshrc don't error on first run.
   if [ -z "${DRY_RUN:-}" ]; then
     sudo cp -n "$C/nushell/env.local.example.nu" "$nud/env.local.nu"               2>/dev/null || true
     sudo cp -n "$C/zsh/.zshrc.local.example"      "$home/.zshrc.local"             2>/dev/null || true
@@ -33,8 +32,8 @@ link_user_configs() {
 
 link_tools_systemwide() {
   local b p d
-  local dirs=("$HOME/.local/bin" "$HOME/.cargo/bin" "$HOME/.atuin/bin" "/opt/homebrew/bin")
-  for b in starship zoxide atuin carapace hcloud doctl; do
+  local dirs=("$HOME/.local/bin" "$HOME/.cargo/bin" "/opt/homebrew/bin")
+  for b in starship zoxide carapace hcloud doctl; do
     p="$(command -v "$b" 2>/dev/null || true)"
     if [ -z "$p" ]; then
       for d in "${dirs[@]}"; do [ -x "$d/$b" ] && { p="$d/$b"; break; }; done
