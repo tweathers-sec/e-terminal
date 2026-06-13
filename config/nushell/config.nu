@@ -107,7 +107,7 @@ $env.config.hooks = {
 alias l = ls --all
 alias ll = ls --long
 alias la = ls --all --long
-alias lt = eza --tree --level=2 --long --icons --git
+alias lt = eza --tree --level=2 --long --git
 alias c = clear
 alias v = nvim
 alias gst = git status
