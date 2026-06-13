@@ -62,6 +62,18 @@ seed_local() {
   ok "seeded $(abbrev "$dest") (edit it for machine-specific env/secrets)"
 }
 
+ensure_ghostty_terminfo() {
+  has tic || return 0
+  infocmp xterm-ghostty >/dev/null 2>&1 && { ok "xterm-ghostty terminfo present"; return 0; }
+  info "Installing xterm-ghostty terminfo (so SSH-in from Ghostty has a correct TERM)"
+  if [ -n "${DRY_RUN:-}" ]; then log "  [dry-run] tic -x config/terminfo/xterm-ghostty.terminfo"; return 0; fi
+  if tic -x "$DOTFILES_DIR/config/terminfo/xterm-ghostty.terminfo" 2>/dev/null; then
+    ok "xterm-ghostty terminfo installed"
+  else
+    warn "could not install xterm-ghostty terminfo (tmux/SSH may warn about TERM)"
+  fi
+}
+
 import_history() {
   local zsh_hist="$HOME/.zsh_history" nu_hist; nu_hist="$(nu_config_dir)/history.txt"
   [ -f "$zsh_hist" ] || return 0
@@ -132,6 +144,7 @@ main() {
   clean_conflicts
   link_configs
   apply_user_config
+  ensure_ghostty_terminfo
   install_tmux_plugins
   install_root
   import_history
