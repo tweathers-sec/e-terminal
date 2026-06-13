@@ -9,6 +9,7 @@ NU_DIR="$(nu_config_dir)"
 MANAGED=(
   "$HOME/.zshrc"
   "$HOME/.config/starship.toml"
+  "$HOME/.config/starship-console.toml"
   "$HOME/.config/ghostty/config"
   "$HOME/.config/tmux/tmux.conf"
   "$HOME/.config/tmux/tmux.reset.conf"
