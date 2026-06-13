@@ -26,29 +26,26 @@ MANAGED=(
   "$HOME/.local/bin/e-update"
 )
 
-latest_backup() {
-  local base="$HOME/.e-terminal-backup"
-  [ -d "$base" ] || return 1
-  ls -1d "$base"/*/ 2>/dev/null | sort | tail -1
-}
+ETERM_ORIG="$HOME/.e-terminal-backup/original"
 
 main() {
   info "e-terminal uninstall"
   detect_os
-  local backup; backup="$(latest_backup || true)"
 
+  local dst base
   for dst in "${MANAGED[@]}"; do
-    if [ -L "$dst" ] && [[ "$(readlink "$dst")" == "$DOTFILES_DIR"/* ]]; then
-      run rm "$dst"
-      ok "removed link ${dst/#$HOME/~}"
-      if [ -n "${backup:-}" ] && [ -e "${backup}$(basename "$dst").bak" ]; then
-        run mv "${backup}$(basename "$dst").bak" "$dst"
-        ok "restored ${dst/#$HOME/~} from backup"
-      fi
-    else
-      log "skip (not an e-terminal link): ${dst/#$HOME/~}"
+    base="$(basename "$dst")"
+    if [ -e "$dst" ] || [ -L "$dst" ]; then
+      run rm -rf "$dst"
+      ok "removed ${dst/#$HOME/~}"
+    fi
+    if [ -e "$ETERM_ORIG/$base.bak" ]; then
+      run cp -RP "$ETERM_ORIG/$base.bak" "$dst" && ok "restored original ${dst/#$HOME/~}" || true
     fi
   done
+
+  run rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/commit" \
+            "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/eza-colors"
 
   local t
   for b in swapshell e-session-log e-session-rec e-session-view theme e-update; do

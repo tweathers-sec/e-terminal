@@ -14,35 +14,36 @@ source "$DOTFILES_DIR/lib/plugins.sh"
 source "$DOTFILES_DIR/lib/paths.sh"
 
 link_configs() {
-  info "Linking configs"
+  info "Installing configs"
   local C="$DOTFILES_DIR/config"
+  local prev_theme; prev_theme="$(sed -n 's/^palette = "\(.*\)"/\1/p' "$HOME/.config/starship.toml" 2>/dev/null | head -1)"
 
-  symlink_with_backup "$C/zsh/.zshrc"               "$HOME/.zshrc"
-  symlink_with_backup "$C/starship/starship.toml"   "$HOME/.config/starship.toml"
-  symlink_with_backup "$C/starship/starship-console.toml" "$HOME/.config/starship-console.toml"
-  symlink_with_backup "$C/ghostty/config"           "$HOME/.config/ghostty/config"
-  symlink_with_backup "$C/ghostty/themes"            "$HOME/.config/ghostty/themes"
-  symlink_with_backup "$C/tmux/tmux.conf"           "$HOME/.config/tmux/tmux.conf"
-  symlink_with_backup "$C/tmux/tmux.reset.conf"     "$HOME/.config/tmux/tmux.reset.conf"
-  symlink_with_backup "$C/tmux/scripts"             "$HOME/.config/tmux/scripts"
-  symlink_with_backup "$C/tmux/themes"              "$HOME/.config/tmux/themes"
-  symlink_with_backup "$C/zellij/themes"            "$HOME/.config/zellij/themes"
+  install_path "$C/zsh/.zshrc"               "$HOME/.zshrc"
+  install_path "$C/starship/starship.toml"   "$HOME/.config/starship.toml"
+  install_path "$C/starship/starship-console.toml" "$HOME/.config/starship-console.toml"
+  install_path "$C/ghostty/config"           "$HOME/.config/ghostty/config"
+  install_path "$C/ghostty/themes"            "$HOME/.config/ghostty/themes"
+  install_path "$C/tmux/tmux.conf"           "$HOME/.config/tmux/tmux.conf"
+  install_path "$C/tmux/tmux.reset.conf"     "$HOME/.config/tmux/tmux.reset.conf"
+  install_path "$C/tmux/scripts"             "$HOME/.config/tmux/scripts"
+  install_path "$C/tmux/themes"              "$HOME/.config/tmux/themes"
+  install_path "$C/zellij/themes"            "$HOME/.config/zellij/themes"
   local NU_DIR; NU_DIR="$(nu_config_dir)"
-  symlink_with_backup "$C/nushell/config.nu"        "$NU_DIR/config.nu"
-  symlink_with_backup "$C/nushell/env.nu"           "$NU_DIR/env.nu"
-  symlink_with_backup "$C/nushell/scripts"          "$NU_DIR/scripts"
+  install_path "$C/nushell/config.nu"        "$NU_DIR/config.nu"
+  install_path "$C/nushell/env.nu"           "$NU_DIR/env.nu"
+  install_path "$C/nushell/scripts"          "$NU_DIR/scripts"
 
   run mkdir -p "$HOME/.local/bin"
   run chmod +x "$C/bin/swapshell" "$C/bin/e-session-log" "$C/bin/theme" "$C/bin/e-update" "$C/tmux/scripts/"*.sh 2>/dev/null || true
-  symlink_with_backup "$C/bin/swapshell"            "$HOME/.local/bin/swapshell"
-  symlink_with_backup "$C/bin/e-session-log"        "$HOME/.local/bin/e-session-log"
-  symlink_with_backup "$C/bin/theme"                "$HOME/.local/bin/theme"
-  symlink_with_backup "$C/bin/e-update"             "$HOME/.local/bin/e-update"
+  install_path "$C/bin/swapshell"            "$HOME/.local/bin/swapshell"
+  install_path "$C/bin/e-session-log"        "$HOME/.local/bin/e-session-log"
+  install_path "$C/bin/theme"                "$HOME/.local/bin/theme"
+  install_path "$C/bin/e-update"             "$HOME/.local/bin/e-update"
   _esv_os="$(uname -s | tr 'A-Z' 'a-z')"
   case "$(uname -m)" in x86_64|amd64) _esv_arch=amd64 ;; aarch64|arm64) _esv_arch=arm64 ;; *) _esv_arch="" ;; esac
   if [ -n "$_esv_arch" ]; then
     for _b in e-session-view e-session-rec; do
-      [ -x "$C/bin/${_b}-${_esv_os}-${_esv_arch}" ] && symlink_with_backup "$C/bin/${_b}-${_esv_os}-${_esv_arch}" "$HOME/.local/bin/${_b}"
+      [ -x "$C/bin/${_b}-${_esv_os}-${_esv_arch}" ] && install_path "$C/bin/${_b}-${_esv_os}-${_esv_arch}" "$HOME/.local/bin/${_b}"
     done
   fi
 
@@ -53,7 +54,13 @@ link_configs() {
     local zc="$HOME/.config/zellij/config.kdl"; mkdir -p "$HOME/.config/zellij"; [ -f "$zc" ] || : > "$zc"
     grep -qE '^[[:space:]]*theme[[:space:]]+"' "$zc" || { printf 'theme "arrow"\n' >> "$zc"; ok "zellij theme set to arrow"; }
   fi
-  [ -z "${DRY_RUN:-}" ] && sh "$C/bin/theme" __output >/dev/null 2>&1 && ok "themed command output (eza colors)" || true
+  if [ -z "${DRY_RUN:-}" ]; then
+    if [ -n "$prev_theme" ] && [ -f "$HOME/.config/tmux/themes/$prev_theme.conf" ]; then
+      sh "$C/bin/theme" __apply "$prev_theme" >/dev/null 2>&1 && ok "theme restored: $prev_theme" || true
+    else
+      sh "$C/bin/theme" __output >/dev/null 2>&1 && ok "themed command output (eza colors)" || true
+    fi
+  fi
 }
 
 seed_local() {

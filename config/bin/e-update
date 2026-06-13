@@ -3,8 +3,7 @@ set -eu
 
 REPO_SLUG="${E_TERMINAL_REPO:-tweathers-sec/e-terminal}"
 REPO_URL="${E_TERMINAL_REPO_URL:-https://github.com/${REPO_SLUG}.git}"
-DEST="${E_TERMINAL_HOME:-$HOME/.e-terminal}"
-VERSION_FILE="$DEST/.e-terminal-commit"
+VERSION_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/commit"
 
 FORCE=0
 for a in "$@"; do
@@ -15,35 +14,22 @@ for a in "$@"; do
   esac
 done
 
-if [ "${E_UPDATE_STAGE:-}" != run ]; then
-  command -v git >/dev/null 2>&1 || { echo "e-update: git is required" >&2; exit 1; }
-  remote="$(git ls-remote "$REPO_URL" HEAD 2>/dev/null | awk 'NR==1{print $1}')"
-  installed=""; [ -f "$VERSION_FILE" ] && installed="$(cat "$VERSION_FILE" 2>/dev/null || true)"
-  if [ "$FORCE" -ne 1 ] && [ -n "$remote" ] && [ "$remote" = "$installed" ]; then
-    echo "e-update: already up to date ($(printf '%.7s' "$installed"))"
-    exit 0
-  fi
-  if [ -n "$installed" ] && [ -n "$remote" ]; then
-    echo "e-update: $(printf '%.7s' "$installed") -> $(printf '%.7s' "$remote")"
-  fi
-  self="$(command -v "$0" 2>/dev/null || true)"; [ -n "$self" ] || self="$0"
-  tmp="$(mktemp -d)"
-  cp "$self" "$tmp/e-update"
-  E_UPDATE_STAGE=run E_UPDATE_TMP="$tmp" exec sh "$tmp/e-update" "$@"
+command -v git >/dev/null 2>&1 || { echo "e-update: git is required" >&2; exit 1; }
+
+remote="$(git ls-remote "$REPO_URL" HEAD 2>/dev/null | awk 'NR==1{print $1}')"
+installed=""; [ -f "$VERSION_FILE" ] && installed="$(cat "$VERSION_FILE" 2>/dev/null || true)"
+if [ "$FORCE" -ne 1 ] && [ -n "$remote" ] && [ "$remote" = "$installed" ]; then
+  echo "e-update: already up to date ($(printf '%.7s' "$installed"))"
+  exit 0
 fi
+[ -n "$installed" ] && [ -n "$remote" ] && echo "e-update: $(printf '%.7s' "$installed") -> $(printf '%.7s' "$remote")"
 
-tmp="$E_UPDATE_TMP"
+tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
-
 echo "e-update: fetching latest ($REPO_URL)"
 git clone --depth 1 "$REPO_URL" "$tmp/src" || { echo "e-update: fetch failed" >&2; exit 1; }
 [ -f "$tmp/src/install.sh" ] || { echo "e-update: bad checkout (no install.sh)" >&2; exit 1; }
 
-echo "e-update: refreshing $DEST"
-rm -rf "$DEST"
-mkdir -p "$DEST"
-cp -R "$tmp/src/." "$DEST/"
-
-echo "e-update: re-running installer"
-bash "$DEST/install.sh"
+echo "e-update: installing"
+bash "$tmp/src/install.sh"
 echo "e-update: done — open a new terminal to load changes"
