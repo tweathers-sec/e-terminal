@@ -58,10 +58,12 @@ bindkey -M vicmd 'j' history-substring-search-down
 command -v batcat >/dev/null 2>&1 && ! command -v bat >/dev/null 2>&1 && alias bat='batcat'
 command -v fdfind >/dev/null 2>&1 && ! command -v fd  >/dev/null 2>&1 && alias fd='fdfind'
 if command -v eza >/dev/null 2>&1; then
-  alias ls='eza --group-directories-first'
-  alias ll='eza -la --group-directories-first'
-  alias la='eza -a --group-directories-first'
-  alias lt='eza --tree --level=2 --git'
+  _icons='--icons'; [[ "$TERM" == linux ]] && _icons=''
+  alias ls="eza $_icons --group-directories-first"
+  alias ll="eza -la $_icons --group-directories-first"
+  alias la="eza -a $_icons --group-directories-first"
+  alias lt="eza --tree --level=2 $_icons --git"
+  unset _icons
 fi
 command -v bat >/dev/null 2>&1 && alias cat='bat --paging=never'
 alias v='nvim'
@@ -69,7 +71,8 @@ alias c='clear'
 
 cx() {
   cd "$@" || return
-  if command -v eza >/dev/null 2>&1; then eza -l --group-directories-first; else ls -lh; fi
+  local i='--icons'; [[ "$TERM" == linux ]] && i=''
+  if command -v eza >/dev/null 2>&1; then eza -l $i --group-directories-first; else ls -lh; fi
 }
 
 if (( ! ${+functions[_zsh_highlight]} )) && \
