@@ -36,8 +36,7 @@ _eterm_shell_path() {
 }
 
 _eterm_is_ours() {
-  [ -L "$1" ] || return 1
-  case "$(readlink "$1")" in "$DOTFILES_DIR"/*) return 0 ;; *) return 1 ;; esac
+  [ -e "$1" ] && grep -q '_eterm_osc_precmd' "$1" 2>/dev/null
 }
 
 capture_user_config() {
