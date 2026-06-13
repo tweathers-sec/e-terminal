@@ -43,18 +43,6 @@ if (( ! ${+functions[_zsh_autosuggest_start]} )) && \
    [ -f "$ETERM_ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
   source "$ETERM_ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
-if (( ! ${+functions[history-substring-search-up]} )) && \
-   [ -f "$ETERM_ZSH_PLUGINS/zsh-history-substring-search/zsh-history-substring-search.zsh" ]; then
-  source "$ETERM_ZSH_PLUGINS/zsh-history-substring-search/zsh-history-substring-search.zsh"
-fi
-
-zmodload zsh/terminfo 2>/dev/null
-for _k in '^[[A' '^[OA' "${terminfo[kcuu1]:-}"; do [ -n "$_k" ] && bindkey "$_k" history-substring-search-up; done
-for _k in '^[[B' '^[OB' "${terminfo[kcud1]:-}"; do [ -n "$_k" ] && bindkey "$_k" history-substring-search-down; done
-unset _k
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-
 command -v batcat >/dev/null 2>&1 && ! command -v bat >/dev/null 2>&1 && alias bat='batcat'
 command -v fdfind >/dev/null 2>&1 && ! command -v fd  >/dev/null 2>&1 && alias fd='fdfind'
 if command -v eza >/dev/null 2>&1; then
@@ -74,12 +62,6 @@ cx() {
   local i='--icons'; [[ "$TERM" == linux ]] && i=''
   if command -v eza >/dev/null 2>&1; then eza -l $i --group-directories-first; else ls -lh; fi
 }
-
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-if (( ! ${+functions[_zsh_highlight]} )) && \
-   [ -f "$ETERM_ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
-  source "$ETERM_ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
 
 _eterm_accept_line() { zle reset-prompt; zle .accept-line; }
 zle -N accept-line _eterm_accept_line
@@ -110,3 +92,20 @@ _eterm_eza_theme() {
 add-zsh-hook precmd _eterm_eza_theme
 
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+if (( ! ${+functions[_zsh_highlight]} )) && \
+   [ -f "$ETERM_ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "$ETERM_ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+if (( ! ${+functions[history-substring-search-up]} )) && \
+   [ -f "$ETERM_ZSH_PLUGINS/zsh-history-substring-search/zsh-history-substring-search.zsh" ]; then
+  source "$ETERM_ZSH_PLUGINS/zsh-history-substring-search/zsh-history-substring-search.zsh"
+fi
+zmodload zsh/terminfo 2>/dev/null
+for _k in '^[[A' '^[OA' "${terminfo[kcuu1]:-}"; do [ -n "$_k" ] && bindkey "$_k" history-substring-search-up; done
+for _k in '^[[B' '^[OB' "${terminfo[kcud1]:-}"; do [ -n "$_k" ] && bindkey "$_k" history-substring-search-down; done
+unset _k
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
