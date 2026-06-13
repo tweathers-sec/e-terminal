@@ -53,7 +53,8 @@ git clone https://github.com/tweathers-sec/e-terminal.git ~/.e-terminal
 
 The install strips git metadata from `~/.e-terminal`, so the deployed copy has no remote
 and can't push back to the repo. To update later, run `e-update` — it re-fetches the latest
-from GitHub and re-runs the installer.
+and reinstalls the configs/themes/scripts only (no sudo, no package/shell changes). Re-run
+the full installer for new package dependencies or to redo the shell/root setup.
 
 Then:
 
