@@ -30,6 +30,10 @@ path add ($nu.home-dir | path join "go" "bin")
 $env.EDITOR = "nvim"
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash'
 
+if (($env.TERM? | default "") == "linux") {
+  $env.STARSHIP_CONFIG = ($nu.home-dir | path join ".config" "starship-console.toml")
+}
+
 let starship_cache = ($nu.home-dir | path join ".cache" "starship" "init.nu")
 let zoxide_cache   = ($nu.home-dir | path join ".cache" "zoxide.nu")
 let carapace_cache = ($nu.home-dir | path join ".cache" "carapace" "init.nu")

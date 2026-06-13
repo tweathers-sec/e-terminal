@@ -19,6 +19,7 @@ link_configs() {
 
   symlink_with_backup "$C/zsh/.zshrc"               "$HOME/.zshrc"
   symlink_with_backup "$C/starship/starship.toml"   "$HOME/.config/starship.toml"
+  symlink_with_backup "$C/starship/starship-console.toml" "$HOME/.config/starship-console.toml"
   symlink_with_backup "$C/ghostty/config"           "$HOME/.config/ghostty/config"
   symlink_with_backup "$C/ghostty/themes"            "$HOME/.config/ghostty/themes"
   symlink_with_backup "$C/tmux/tmux.conf"           "$HOME/.config/tmux/tmux.conf"

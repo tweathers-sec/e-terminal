@@ -21,6 +21,7 @@ typeset -U path PATH
 
 autoload -Uz compinit && compinit -C
 
+[[ "$TERM" == linux ]] && export STARSHIP_CONFIG="$HOME/.config/starship-console.toml"
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 command -v zoxide   >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 if command -v carapace >/dev/null 2>&1; then
