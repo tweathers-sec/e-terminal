@@ -108,10 +108,13 @@ alias l = ls --all
 alias ll = ls --long
 alias la = ls --all --long
 def lt [...args] {
-  if (($env.TERM? | default "") == "linux") {
-    eza --tree --level=2 --long --git ...$args
+  let icons = (if (($env.TERM? | default "") == "linux") { [] } else { ["--icons"] })
+  let f = (($env.XDG_CONFIG_HOME? | default ($nu.home-dir | path join ".config")) | path join "e-terminal" "eza-colors")
+  let ec = (if ($f | path exists) { open --raw $f | str trim } else { "" })
+  if ($ec | is-empty) {
+    eza --tree --level=2 --long --git ...$icons ...$args
   } else {
-    eza --tree --level=2 --long --icons --git ...$args
+    with-env { EZA_COLORS: $ec } { eza --tree --level=2 --long --git ...$icons ...$args }
   }
 }
 alias c = clear

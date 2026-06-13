@@ -27,7 +27,7 @@ git clone https://github.com/tweathers-sec/e-terminal.git ~/.e-terminal && ~/.e-
 
 - **Cross-platform, one command** - `./install.sh` bootstraps a bare box (packages, font, plugins,
   configs) on macOS *and* Debian/Ubuntu/Kali/Parrot. Idempotent and safe to re-run.
-- **Switchable themes** - `theme` recolors the **prompt + tmux + zellij** together, live. Ships
+- **Switchable themes** - `theme` recolors the **prompt + tmux + zellij + command output** together, live. Ships
   `arrow` (default), `jellybeans`, `gruvbox`, `catppuccin`, `nord`, `tokyonight`.
 - **Identical prompt in every shell** - a two-line Starship powerline that looks the same in
   Nushell and zsh.
@@ -120,8 +120,8 @@ Transparent background with rounded capsules, in three zones:
 
 ## Themes
 
-Switch the **Starship prompt, tmux bar, and zellij UI** colors *together* - fonts and layout never
-change.
+Switch the **Starship prompt, tmux bar, zellij UI, and command output** (eza file/dir colors via
+`EZA_COLORS`, derived from the theme palette) *together*, live - fonts and layout never change.
 
 ```sh
 theme               # arrow through a live preview; Enter applies, Esc cancels
