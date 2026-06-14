@@ -18,7 +18,7 @@ link_configs() {
   info "Installing configs"
   local C="$DOTFILES_DIR/config"
   local prev_theme; prev_theme="$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/e-terminal/theme" 2>/dev/null || true)"
-  [ -n "$prev_theme" ] || prev_theme="$(sed -n 's/^palette = "\(.*\)"/\1/p' "$HOME/.config/starship.toml" 2>/dev/null | head -1)"
+  [ -n "$prev_theme" ] || prev_theme="$(sed -n 's/^palette = "\(.*\)"/\1/p' "$HOME/.config/starship.toml" 2>/dev/null | head -1 || true)"
 
   install_path "$C/zsh/.zshrc"               "$HOME/.zshrc"
   install_path "$C/starship/starship.toml"   "$HOME/.config/starship.toml"
