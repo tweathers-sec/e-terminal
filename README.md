@@ -175,8 +175,6 @@ theme list          # list available themes
 | `venom` | green on dark |
 | `radon` | acid-yellow + blue on navy |
 
-**Agency-inspired** themes, color-matched to each service or agency's branding.
-
 *In honor of those who have served, and those who continue to serve and keep us safe. These themes are for them.*
 
 | Theme | Inspired by | Palette |
