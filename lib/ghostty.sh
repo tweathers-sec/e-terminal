@@ -2,14 +2,16 @@ GHOSTTY_DEB_REPO="${GHOSTTY_DEB_REPO:-mkasberg/ghostty-ubuntu}"
 
 is_headed_linux() {
   [ "$OS" = macos ] && return 1
-  [ -d /usr/share/xsessions ] && ls /usr/share/xsessions/*.desktop >/dev/null 2>&1 && return 0
-  [ -d /usr/share/wayland-sessions ] && ls /usr/share/wayland-sessions/*.desktop >/dev/null 2>&1 && return 0
-  [ "$(systemctl get-default 2>/dev/null || true)" = graphical.target ] && return 0
-  local dm
-  for dm in gdm gdm3 sddm lightdm lxdm xdm; do
-    systemctl is-enabled "$dm.service" >/dev/null 2>&1 && return 0
-  done
   [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] && return 0
+  case "${XDG_SESSION_TYPE:-}" in x11|wayland) return 0 ;; esac
+  [ -e /etc/systemd/system/display-manager.service ] && return 0
+  if command -v loginctl >/dev/null 2>&1; then
+    local s t
+    for s in $(loginctl list-sessions --no-legend 2>/dev/null | awk '{print $1}'); do
+      t="$(loginctl show-session "$s" -p Type --value 2>/dev/null || true)"
+      case "$t" in x11|wayland|mir) return 0 ;; esac
+    done
+  fi
   return 1
 }
 

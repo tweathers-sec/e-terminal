@@ -49,6 +49,8 @@ link_configs() {
     done
   fi
 
+  ok "configs copied into place"
+
   seed_local "$C/zsh/.zshrc.local.example"          "$HOME/.zshrc.local"
   seed_local "$C/nushell/env.local.example.nu"      "$NU_DIR/env.local.nu"
   seed_local "$C/tmux/themes/arrow.conf"       "$HOME/.config/tmux/theme.conf"
