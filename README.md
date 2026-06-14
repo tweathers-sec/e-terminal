@@ -75,6 +75,8 @@ and can't push back to the repo. To pull the latest onto any machine, run:
 e-update
 ```
 
+![e-update fetching the latest commit and reinstalling configs, themes, scripts, and plugins](images/e-update.png)
+
 It clones the latest `main` to a temp directory, copies the updated **configs, themes, scripts,
 plugins, and terminfo** into place, then cleans up - **no sudo, no package installs, and your login
 shell is left untouched**. Your choices carry over: the **default shell** you set with `swapshell` and
