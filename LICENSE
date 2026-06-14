@@ -1,0 +1,54 @@
+e-terminal — Ownership and Use Policy
+
+Copyright (c) 2026 Mayweather Group, VTEM Labs, and Travis Weathers. All rights reserved.
+
+This software and its source code (the "Software") — including the custom Go
+programs, shell and Nushell scripts, configuration, themes, and other works
+original to this repository — are owned by Mayweather Group, VTEM Labs, and Travis Weathers
+(the "Owner").
+
+
+PERMITTED — Personal and other non-commercial use
+
+You may use, copy, modify, and build upon the Software, free of charge, for
+personal, educational, research, and other non-commercial purposes, provided
+that the copyright notice above and this policy are retained in all copies or
+substantial portions of the Software.
+
+
+RESTRICTED — Commercial / for-profit use
+
+You may NOT use, modify, distribute, sell, sublicense, host, or otherwise
+exploit the Software, in whole or in part, for any commercial or for-profit
+purpose without the prior WRITTEN permission of the Owner. Commercial or
+for-profit purposes include, without limitation: incorporating the Software
+into a product or service that is sold or monetized; using the Software to
+deliver paid services to third parties; or any use intended to generate
+revenue.
+
+To request a commercial license, contact: travis@mwgroup.io
+
+
+THIRD-PARTY COMPONENTS
+
+This project configures, references, and may install or bundle third-party
+software (for example: Starship, tmux, zellij, Nushell, eza, fzf, zoxide, and
+shell plugins). Those components remain the property of their respective authors
+and are governed by their own licenses; they are not covered by this policy.
+
+
+NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE OWNER BE
+LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+NOTE ON LICENSE TYPE
+
+This is a source-available, non-commercial license. It is similar in intent to
+the PolyForm Noncommercial License 1.0.0 (and to CC BY-NC for non-software
+works). It is NOT an OSI-approved open-source license.

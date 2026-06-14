@@ -340,3 +340,15 @@ config/
 
 Modeled on [omerxx/dotfiles](https://github.com/omerxx/dotfiles) and
 [theRubberDuckiee/dev-environment-files](https://github.com/theRubberDuckiee/dev-environment-files).
+
+---
+
+## License
+
+Copyright © 2026 Mayweather Group, VTEM Labs, and Travis Weathers. **All rights reserved.**
+
+Source-available and **non-commercial**: free to use and modify for personal,
+educational, and other non-commercial purposes. **Commercial / for-profit use
+requires prior written permission** — contact travis@mwgroup.io. See
+[LICENSE](LICENSE) for full terms. Bundled third-party tools (Starship, tmux,
+zellij, Nushell, eza, …) retain their own licenses.
