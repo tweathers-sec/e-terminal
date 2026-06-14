@@ -112,7 +112,7 @@ login-shell / root setup. *(Repo overrides: `E_TERMINAL_REPO`, `E_TERMINAL_REPO_
 
 | Tool | Role |
 |---|---|
-| **[Ghostty](https://ghostty.org)** | Terminal - JetBrains Mono Nerd Font, themed to match. Launches your login shell like every terminal (no `command` override). |
+| **[Ghostty](https://ghostty.org)** | Terminal - JetBrains Mono Nerd Font, themed to match. Launches your login shell like every terminal (no `command` override). The `ssh` wrapper falls back to `TERM=xterm-256color` so remote tools work without installing any terminfo. |
 | **[Starship](https://starship.rs)** | Prompt - one two-line powerline, identical in Nushell and zsh. |
 | **[tmux](https://github.com/tmux/tmux)** | Default multiplexer - `Ctrl-a` prefix, themed 3-zone status bar, sessionx/floax/resurrect/thumbs. |
 | **[zellij](https://zellij.dev)** | Optional alternative multiplexer (alongside tmux) - themed to match. Launch with `zellij`. |
