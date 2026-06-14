@@ -150,16 +150,53 @@ Switch the **Starship prompt, tmux bar, zellij UI, and command output** (eza fil
 `EZA_COLORS`, derived from the theme palette) *together*, live - fonts and layout never change.
 
 ```sh
-theme               # arrow through a live preview; Enter applies, Esc cancels
-theme arrow         # or: jellybeans · gruvbox · catppuccin · nord · tokyonight
+theme               # live preview; ↑/↓ to compare, Enter applies, Esc cancels
+theme arrow         # apply by name (theme list shows them all)
 theme list          # list available themes
 ```
+
+**Standard**
 
 | Theme | Look |
 |---|---|
 | **`arrow`** *(default)* | Tactical black + orange-red - matches the ARROW console |
 | `jellybeans` | Muted neutral grays + soft sky-blue accent |
 | `gruvbox` · `catppuccin` · `nord` · `tokyonight` | The popular dark palettes |
+
+**Brand-accent** — dark base, one signature color each
+
+| Theme | Palette |
+|---|---|
+| `aegis` | royal blue on deep navy |
+| `cobalt` | royal blue on black |
+| `nightshade` | violet on navy |
+| `meridian` | lime-chartreuse on near-black |
+| `glacier` | cyan on navy |
+| `nebula` | crimson + cyan on navy |
+| `aurora` | neon teal + magenta on black |
+| `basalt` | turquoise + orange-red on slate |
+| `ember` | orange + blue on warm dark |
+| `vermillion` | crimson on dark |
+| `ironclad` | red-maroon on navy |
+| `solstice` | orange on charcoal |
+| `venom` | green on dark |
+| `radon` | acid-yellow + blue on navy |
+
+**Agency-inspired** — color-matched to each service / agency's branding
+
+| Theme | Inspired by | Palette |
+|---|---|---|
+| `soldier` | U.S. Army | black + gold |
+| `devildog` | U.S. Marine Corps | scarlet + gold |
+| `sailor` | U.S. Navy | navy + gold |
+| `flyboy` | U.S. Air Force | steel blue + bronze |
+| `coastie` | U.S. Coast Guard | ocean blue + racing-stripe red |
+| `guardian` | U.S. Space Force | silver + cosmic blue |
+| `agent` | FBI | gold + blue + red |
+| `apollo` | NASA | meatball red + blue |
+| `langley` | CIA | teal-blue + gold |
+| `sentinel` | DIA | indigo + crimson |
+| `meade` | NSA | cyber-green + blue |
 
 ![The theme picker with a live preview](images/theme.png)
 
