@@ -61,8 +61,8 @@ Then:
 3. Run `swapshell` to choose your default shell.
 
 **Requirements:** [Homebrew](https://brew.sh) on macOS; `sudo` on Linux (for `apt` + root setup).
-[Ghostty](https://ghostty.org) is installed automatically on macOS; on Linux, install it separately
-- the config is already in place.
+[Ghostty](https://ghostty.org) is installed automatically on macOS and on headed (GUI) Linux;
+headless servers skip it (the config is in place either way).
 
 ---
 
@@ -78,9 +78,10 @@ e-update
 ![e-update fetching the latest commit and reinstalling configs, themes, scripts, and plugins](images/e-update.png)
 
 It clones the latest `main` to a temp directory, copies the updated **configs, themes, scripts,
-plugins, and terminfo** into place, then cleans up - **no sudo, no package installs, and your login
-shell is left untouched**. Your choices carry over: the **default shell** you set with `swapshell` and
-your **active `theme`** are both preserved across the update.
+plugins, and terminfo** into place, and on headed Linux keeps the **Ghostty app** current, then
+cleans up. It skips the full package bundle and leaves your login shell alone (a new Ghostty release
+on Linux may ask for sudo to install). Your **default shell** (`swapshell`) and **active `theme`** are
+preserved across the update.
 
 | Command | Does |
 |---|---|
@@ -99,6 +100,7 @@ login-shell / root setup. *(Repo overrides: `E_TERMINAL_REPO`, `E_TERMINAL_REPO_
 |------|-------|---------------------------------|
 | **Packages** | `brew bundle` (Brewfile) | `apt` + official installers/releases (starship, zoxide, eza, nushell, carapace, zellij; handles `batcat`/`fdfind` shims) |
 | **Font** | `font-jetbrains-mono-nerd-font` cask | Nerd Fonts release → `~/.local/share/fonts` + `fc-cache` |
+| **Ghostty** | Homebrew cask | headed (GUI) systems: latest `ghostty-ubuntu` .deb; headless: skipped |
 | **Plugins** | TPM + zsh plugins (git clone) | same |
 | **Configs** | copied into place (no symlinks); your originals saved once for rollback | same |
 | **Root** | links the setup into `/var/root` | links the setup into `/root` |
