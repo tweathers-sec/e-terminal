@@ -381,6 +381,6 @@ Copyright © 2026 Mayweather Group, VTEM Labs, and Travis Weathers. **All rights
 
 Source-available and **non-commercial**: free to use and modify for personal,
 educational, and other non-commercial purposes. **Commercial / for-profit use
-requires prior written permission** - contact travis@mwgroup.io. See
+requires prior written permission** - contact [mwgroup.io/contact](https://mwgroup.io/contact/). See
 [LICENSE](LICENSE) for full terms. Bundled third-party tools (Starship, tmux,
 zellij, Nushell, eza, …) retain their own licenses.
