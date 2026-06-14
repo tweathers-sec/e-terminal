@@ -1,14 +1,14 @@
-e-terminal — Ownership and Use Policy
+e-terminal - Ownership and Use Policy
 
 Copyright (c) 2026 Mayweather Group, VTEM Labs, and Travis Weathers. All rights reserved.
 
-This software and its source code (the "Software") — including the custom Go
+This software and its source code (the "Software") - including the custom Go
 programs, shell and Nushell scripts, configuration, themes, and other works
-original to this repository — are owned by Mayweather Group, VTEM Labs, and Travis Weathers
+original to this repository - are owned by Mayweather Group, VTEM Labs, and Travis Weathers
 (the "Owner").
 
 
-PERMITTED — Personal and other non-commercial use
+PERMITTED - Personal and other non-commercial use
 
 You may use, copy, modify, and build upon the Software, free of charge, for
 personal, educational, research, and other non-commercial purposes, provided
@@ -16,7 +16,7 @@ that the copyright notice above and this policy are retained in all copies or
 substantial portions of the Software.
 
 
-RESTRICTED — Commercial / for-profit use
+RESTRICTED - Commercial / for-profit use
 
 You may NOT use, modify, distribute, sell, sublicense, host, or otherwise
 exploit the Software, in whole or in part, for any commercial or for-profit

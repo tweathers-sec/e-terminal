@@ -85,7 +85,7 @@ ensure_eza() {
     warn "eza apt repo failed; building via cargo"
     cargo install eza
   else
-    warn "could not install eza (no apt repo, no cargo) — skipping"
+    warn "could not install eza (no apt repo, no cargo) - skipping"
   fi
 }
 
@@ -104,7 +104,7 @@ ensure_nushell() {
     warn "nushell apt repo failed; building via cargo (slow)"
     cargo install nu
   else
-    warn "could not install nushell — skipping (zsh remains available)"
+    warn "could not install nushell - skipping (zsh remains available)"
   fi
 }
 
@@ -122,11 +122,11 @@ ensure_carapace() {
     if curl -fsSL "$url" -o "$tmp/carapace.deb" && sudo apt-get install -y "$tmp/carapace.deb"; then
       ok "carapace via deb"
     else
-      warn "carapace install failed — completions still work without it"
+      warn "carapace install failed - completions still work without it"
     fi
     rm -rf "$tmp"
   else
-    warn "could not resolve carapace release — skipping"
+    warn "could not resolve carapace release - skipping"
   fi
 }
 
@@ -144,11 +144,11 @@ ensure_zellij() {
     if curl -fsSL "$url" | tar -xz -C "$tmp" 2>/dev/null && [ -f "$tmp/zellij" ]; then
       install -m 0755 "$tmp/zellij" "$HOME/.local/bin/zellij" && ok "zellij installed"
     else
-      warn "zellij extract failed — skipping (optional, tmux remains the default)"
+      warn "zellij extract failed - skipping (optional, tmux remains the default)"
     fi
     rm -rf "$tmp"
   else
-    warn "could not resolve zellij release — skipping (optional)"
+    warn "could not resolve zellij release - skipping (optional)"
   fi
 }
 
@@ -167,10 +167,10 @@ ensure_release_bin() {
     if curl -fsSL "$url" | tar -xz -C "$tmp" 2>/dev/null && [ -f "$tmp/$bin" ]; then
       install -m 0755 "$tmp/$bin" "$HOME/.local/bin/$bin" && ok "$bin installed"
     else
-      warn "$bin extract failed — skipping (optional)"
+      warn "$bin extract failed - skipping (optional)"
     fi
     rm -rf "$tmp"
   else
-    warn "could not resolve $bin release — skipping (optional)"
+    warn "could not resolve $bin release - skipping (optional)"
   fi
 }

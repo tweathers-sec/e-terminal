@@ -17,7 +17,7 @@ quarantine() {
 
 clean_conflicts() {
   if [ -n "${SKIP_CLEANUP:-}" ]; then warn "SKIP_CLEANUP set; leaving prior frameworks in place"; return 0; fi
-  info "Quarantining conflicting shell frameworks (reversible — moved to backup)"
+  info "Quarantining conflicting shell frameworks (reversible - moved to backup)"
   quarantine "$HOME/.oh-my-zsh"     "oh-my-zsh"
   quarantine "$HOME/.zprezto"       "prezto"
   quarantine "$HOME/.zinit"         "zinit"

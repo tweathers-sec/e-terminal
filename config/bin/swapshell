@@ -111,7 +111,7 @@ if ! grep -qxF "$choice" /etc/shells 2>/dev/null; then
   fi
 fi
 
-info "setting your default shell to ${BOLD}$choice${RESET} ${DIM}— enter your password if prompted (chsh, not sudo)${RESET}"
+info "setting your default shell to ${BOLD}$choice${RESET} ${DIM}- enter your password if prompted (chsh, not sudo)${RESET}"
 if ! chsh -s "$choice"; then
   fail "chsh didn't complete; default still $current. Retry: ${BOLD}chsh -s $choice${RESET}"
   exit 1
@@ -132,6 +132,6 @@ if [ "$NO_LAUNCH" -eq 1 ] || [ ! -r /dev/tty ]; then
   exit 0
 fi
 
-printf '\n%s▸%s starting %s%s%s now — type %sexit%s to drop back to your current shell\n' \
+printf '\n%s▸%s starting %s%s%s now - type %sexit%s to drop back to your current shell\n' \
   "$BLUE" "$RESET" "$BOLD" "$choice" "$RESET" "$BOLD" "$RESET"
 exec "$choice" || fail "could not start $choice (it is still your default for new windows)"

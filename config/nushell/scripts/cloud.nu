@@ -10,11 +10,11 @@ export def servers [] {
     let h = (json-list (^hcloud server list -o json | complete | get stdout))
     $rows = ($rows | append ($h | each {|s| {
       cloud:  'hetzner'
-      name:   ($s.name? | default '—')
-      ip:     ($s.public_net?.ipv4?.ip? | default '—')
-      region: ($s.datacenter?.location?.name? | default '—')
-      status: ($s.status? | default '—')
-      type:   ($s.server_type?.name? | default '—')
+      name:   ($s.name? | default '-')
+      ip:     ($s.public_net?.ipv4?.ip? | default '-')
+      region: ($s.datacenter?.location?.name? | default '-')
+      status: ($s.status? | default '-')
+      type:   ($s.server_type?.name? | default '-')
     } }))
   }
 
@@ -22,11 +22,11 @@ export def servers [] {
     let d = (json-list (^doctl compute droplet list -o json | complete | get stdout))
     $rows = ($rows | append ($d | each {|s| {
       cloud:  'do'
-      name:   ($s.name? | default '—')
-      ip:     ($s.networks?.v4? | default [] | where type == 'public' | get ip_address.0? | default '—')
-      region: ($s.region?.slug? | default '—')
-      status: ($s.status? | default '—')
-      type:   ($s.size_slug? | default '—')
+      name:   ($s.name? | default '-')
+      ip:     ($s.networks?.v4? | default [] | where type == 'public' | get ip_address.0? | default '-')
+      region: ($s.region?.slug? | default '-')
+      status: ($s.status? | default '-')
+      type:   ($s.size_slug? | default '-')
     } }))
   }
 

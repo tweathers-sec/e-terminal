@@ -35,7 +35,7 @@ export def sysinfo [--usb] {
   let host  = (sys host)
   let mem   = (sys mem)
   let cores = (sys cpu | length)
-  let load  = (sys cpu | get load_average | first | default '—')
+  let load  = (sys cpu | get load_average | first | default '-')
 
   h 'Host'
   print ([
@@ -64,12 +64,12 @@ export def sysinfo [--usb] {
 
   h 'DNS'
   let ns = (dns-servers)
-  print (if ($ns | is-empty) { '—' } else { $ns | wrap server })
+  print (if ($ns | is-empty) { '-' } else { $ns | wrap server })
 
   if $usb {
     h 'USB devices'
     let u = (usb-list)
-    print (if ($u | is-empty) { '—' } else { $u })
+    print (if ($u | is-empty) { '-' } else { $u })
   }
 }
 
