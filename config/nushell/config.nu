@@ -125,6 +125,14 @@ alias gp = git push origin HEAD
 
 def --env cx [path: string] { cd $path; ls --long }
 
+def --wrapped ssh [...args] {
+  if (($env.TERM? | default "") == "xterm-ghostty") {
+    with-env { TERM: "xterm-256color" } { ^ssh ...$args }
+  } else {
+    ^ssh ...$args
+  }
+}
+
 const e_scripts = ($nu.default-config-dir | path join "scripts")
 use ($e_scripts | path join "net.nu") *
 use ($e_scripts | path join "sys.nu") *

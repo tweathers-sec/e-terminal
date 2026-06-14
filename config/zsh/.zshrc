@@ -63,6 +63,14 @@ cx() {
   if command -v eza >/dev/null 2>&1; then eza -l $i --group-directories-first; else ls -lh; fi
 }
 
+ssh() {
+  if [[ "$TERM" == xterm-ghostty ]]; then
+    TERM=xterm-256color command ssh "$@"
+  else
+    command ssh "$@"
+  fi
+}
+
 _eterm_accept_line() { zle reset-prompt; zle .accept-line; }
 zle -N accept-line _eterm_accept_line
 
