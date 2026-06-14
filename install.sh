@@ -9,6 +9,7 @@ source "$DOTFILES_DIR/lib/symlink.sh"
 source "$DOTFILES_DIR/lib/cleanup.sh"
 source "$DOTFILES_DIR/lib/root.sh"
 source "$DOTFILES_DIR/lib/packages.sh"
+source "$DOTFILES_DIR/lib/ghostty.sh"
 source "$DOTFILES_DIR/lib/font.sh"
 source "$DOTFILES_DIR/lib/plugins.sh"
 source "$DOTFILES_DIR/lib/paths.sh"
@@ -137,7 +138,7 @@ post_install_notes() {
   info "Next steps"
   log "  • tmux: open tmux and press 'prefix + I' (Ctrl-a then Shift-i) to install plugins"
   log "  • shell: login shell set automatically; run 'swapshell' anytime to change it"
-  [ "$OS" != macos ] && log "  • Ghostty on Linux: if not installed, see https://ghostty.org (config is already in place)"
+  [ "$OS" != macos ] && log "  • Ghostty: auto-installed on headed (GUI) Linux, skipped on headless; config is in place either way"
   log "  • open a NEW terminal window to load everything"
   if [ -d "${BACKUP_DIR:-/nonexistent}" ]; then
     warn "previous files backed up to: $(abbrev "$BACKUP_DIR")"
@@ -152,6 +153,7 @@ main() {
   log "  Existing files are backed up to ~/.e-terminal-backup/<timestamp>/ (run uninstall.sh to roll back)."
 
   install_packages
+  install_ghostty_linux
   install_nerd_font
   install_plugins
   capture_user_config
