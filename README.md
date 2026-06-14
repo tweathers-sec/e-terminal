@@ -52,9 +52,7 @@ git clone https://github.com/tweathers-sec/e-terminal.git ~/.e-terminal
 ```
 
 The install strips git metadata from `~/.e-terminal`, so the deployed copy has no remote
-and can't push back to the repo. To update later, run `e-update` — it re-fetches the latest
-and reinstalls the configs/themes/scripts only (no sudo, no package/shell changes). Re-run
-the full installer for new package dependencies or to redo the shell/root setup.
+and can't push back to the repo. To update later, run `e-update` - see [Updating](#updating).
 
 Then:
 
@@ -65,6 +63,31 @@ Then:
 **Requirements:** [Homebrew](https://brew.sh) on macOS; `sudo` on Linux (for `apt` + root setup).
 [Ghostty](https://ghostty.org) is installed automatically on macOS; on Linux, install it separately
 - the config is already in place.
+
+---
+
+## Updating
+
+The installer strips git metadata from `~/.e-terminal`, so a deployed copy has no remote of its own
+and can't push back to the repo. To pull the latest onto any machine, run:
+
+```sh
+e-update
+```
+
+It clones the latest `main` to a temp directory, copies the updated **configs, themes, scripts,
+plugins, and terminfo** into place, then cleans up - **no sudo, no package installs, and your login
+shell is left untouched**. Your choices carry over: the **default shell** you set with `swapshell` and
+your **active `theme`** are both preserved across the update.
+
+| Command | Does |
+|---|---|
+| `e-update` | Update only if a newer commit exists on `main` |
+| `e-update --force` (`-f`) | Reinstall even if already up to date |
+| `e-update --version` (`-V`) | Print the installed commit and exit |
+
+Re-run the full `install.sh` instead when you need new system packages or want to redo the
+login-shell / root setup. *(Repo overrides: `E_TERMINAL_REPO`, `E_TERMINAL_REPO_URL`.)*
 
 ---
 

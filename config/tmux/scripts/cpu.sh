@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# macOS: serve cached value immediately; `top -l 1` takes ~1s and would block tmux's #() loop.
 cache="/tmp/e-terminal-cpu.cache"
 ttl=5
 if [ "$(uname -s)" = "Darwin" ]; then
