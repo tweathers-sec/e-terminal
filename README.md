@@ -155,18 +155,11 @@ theme arrow         # apply by name (theme list shows them all)
 theme list          # list available themes
 ```
 
-**Standard**
-
 | Theme | Look |
 |---|---|
-| **`arrow`** *(default)* | Tactical black + orange-red - matches the ARROW console |
+| **`arrow`** *(default)* | Tactical black + orange-red, matches the ARROW console |
 | `jellybeans` | Muted neutral grays + soft sky-blue accent |
 | `gruvbox` · `catppuccin` · `nord` · `tokyonight` | The popular dark palettes |
-
-**Brand-accent** — dark base, one signature color each
-
-| Theme | Palette |
-|---|---|
 | `aegis` | royal blue on deep navy |
 | `cobalt` | royal blue on black |
 | `nightshade` | violet on navy |
@@ -182,9 +175,9 @@ theme list          # list available themes
 | `venom` | green on dark |
 | `radon` | acid-yellow + blue on navy |
 
-**Agency-inspired** — color-matched to each service / agency's branding
+**Agency-inspired** themes, color-matched to each service or agency's branding.
 
-*In honor of those who have served, and those who continue to serve and keep us safe — these themes are for them.*
+*In honor of those who have served, and those who continue to serve and keep us safe. These themes are for them.*
 
 | Theme | Inspired by | Palette |
 |---|---|---|
@@ -390,6 +383,6 @@ Copyright © 2026 Mayweather Group, VTEM Labs, and Travis Weathers. **All rights
 
 Source-available and **non-commercial**: free to use and modify for personal,
 educational, and other non-commercial purposes. **Commercial / for-profit use
-requires prior written permission** — contact travis@mwgroup.io. See
+requires prior written permission** - contact travis@mwgroup.io. See
 [LICENSE](LICENSE) for full terms. Bundled third-party tools (Starship, tmux,
 zellij, Nushell, eza, …) retain their own licenses.

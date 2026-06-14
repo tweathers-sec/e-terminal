@@ -137,9 +137,9 @@ export def ifconfig [
                 })
       ipv4:    ($r.ipv4 | each {|x| $x.addr } | str join ', ')
       cidr:    ($r.ipv4 | each {|x| $"/($x.prefix)" } | uniq | str join ', ')
-      gateway: (if $primary { ($rt.gateway | default '—') } else { '—' })
+      gateway: (if $primary { ($rt.gateway | default '-') } else { '-' })
       mtu:     $r.mtu
-      mac:     (if ($r.mac | is-empty) { '—' } else { $r.mac })
+      mac:     (if ($r.mac | is-empty) { '-' } else { $r.mac })
     }
     if $show_v6 { $row | insert ipv6 ($r.ipv6 | str join "\n") } else { $row }
   }
@@ -162,10 +162,10 @@ export def myip [--local (-l)] {
   let info = (try { http get --max-time 5sec https://ipinfo.io/json } catch {|e| {} })
   let public = ([
     { field: 'external ip', value: ($info.ip?  | default '(no network)') }
-    { field: 'provider',    value: ($info.org? | default '—') }
+    { field: 'provider',    value: ($info.org? | default '-') }
     { field: 'location',    value: (if (($info.city? | default '') | is-not-empty) {
                                        $'($info.city), ($info.region?), ($info.country?)'
-                                     } else { '—' }) }
+                                     } else { '-' }) }
   ])
   print ($public | table)
   print ''
@@ -256,10 +256,10 @@ export def sslcheck [host: string, port: int = 443] {
   let dot = (if $days == null { '' } else if $days > 30 { $'(ansi green)●(ansi reset)' } else if $days > 7 { $'(ansi yellow)●(ansi reset)' } else { $'(ansi red)●(ansi reset)' })
   {
     host:      $host
-    subject:   ($info | parse --regex 'subject=(?<v>.*)' | get v.0? | default '—')
-    issuer:    ($info | parse --regex 'issuer=(?<v>.*)'  | get v.0? | default '—')
+    subject:   ($info | parse --regex 'subject=(?<v>.*)' | get v.0? | default '-')
+    issuer:    ($info | parse --regex 'issuer=(?<v>.*)'  | get v.0? | default '-')
     expires:   ($notafter | str replace ' GMT' '')
-    days_left: (if $days == null { '—' } else { $'($dot) ($days)' })
+    days_left: (if $days == null { '-' } else { $'($dot) ($days)' })
     san:       ($txt | parse --regex 'DNS:(?<d>[^,\s]+)' | get d | uniq | str join ', ')
   }
 }

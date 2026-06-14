@@ -33,7 +33,7 @@ install_nerd_font() {
     if curl -fsSL "$url" -o "$tmp/font.tar.xz" && tar -xJf "$tmp/font.tar.xz" -C "$dest"; then
       ok "font extracted to ${dest/#$HOME/~}"
     else
-      warn "font download failed ($url) — install JetBrainsMono Nerd Font manually"
+      warn "font download failed ($url) - install JetBrainsMono Nerd Font manually"
     fi
     rm -rf "$tmp"
   fi

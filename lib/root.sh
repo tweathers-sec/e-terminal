@@ -50,7 +50,7 @@ install_root() {
 
   local rhome; [ "$OS" = macos ] && rhome=/var/root || rhome=/root
 
-  info "Sharing e-terminal with root (sudo) — so 'sudo nu' / rootsh are styled too"
+  info "Sharing e-terminal with root (sudo) - so 'sudo nu' / rootsh are styled too"
   run sudo mkdir -p /usr/local/bin
   link_tools_systemwide
   run sudo ln -sf "$DOTFILES_DIR/config/bin/swapshell"      /usr/local/bin/swapshell
@@ -65,7 +65,7 @@ install_root() {
     done
   fi
   link_user_configs "$rhome"
-  ok "root configured — drop in with: rootsh   (or: sudo -H nu)"
+  ok "root configured - drop in with: rootsh   (or: sudo -H nu)"
 
   if [ -n "${INSTALL_ALL_USERS:-}" ] && [ "$OS" != macos ]; then
     info "Linking configs for all human users (INSTALL_ALL_USERS)"
