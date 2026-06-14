@@ -28,8 +28,8 @@ install_packages_apt() {
   run mkdir -p "$HOME/.local/bin" /tmp >/dev/null 2>&1 || true
 
   info "apt update + core packages"
-  run sudo apt-get update -y
-  apt_install zsh tmux git curl wget unzip gpg ca-certificates build-essential \
+  apt_q update
+  apt_install zsh tmux git curl wget unzip gpg ca-certificates \
               fontconfig net-tools dnsutils iproute2 openssl \
               zstd xz-utils p7zip-full fzf ripgrep jq bat fd-find
   link_bat_fd_shims
@@ -45,11 +45,22 @@ install_packages_apt() {
   return 0
 }
 
+apt_q() {
+  if [ -n "${DRY_RUN:-}" ]; then printf '  %s[dry-run]%s apt-get %s\n' "$C_YELLOW" "$C_RESET" "$*"; return 0; fi
+  local log rc
+  log="$(mktemp 2>/dev/null || echo "/tmp/eterm-apt-$$.log")"
+  sudo DEBIAN_FRONTEND=noninteractive apt-get -y -qq -o Dpkg::Use-Pty=0 "$@" >"$log" 2>&1; rc=$?
+  [ "$rc" -ne 0 ] && { err "apt-get $* failed:"; sed 's/^/    /' "$log" >&2; }
+  rm -f "$log"
+  return "$rc"
+}
+
 apt_install() {
   local pkgs=() p
   for p in "$@"; do dpkg -s "$p" >/dev/null 2>&1 || pkgs+=("$p"); done
   if [ ${#pkgs[@]} -eq 0 ]; then ok "apt: all present"; return 0; fi
-  run sudo apt-get install -y "${pkgs[@]}"
+  ok "installing ${#pkgs[@]} package(s)"
+  apt_q install "${pkgs[@]}" && ok "core packages installed"
 }
 
 link_bat_fd_shims() {
@@ -79,7 +90,7 @@ ensure_eza() {
           | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg 2>/dev/null \
      && echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" \
           | sudo tee /etc/apt/sources.list.d/gierens.list >/dev/null \
-     && sudo apt-get update -y && sudo apt-get install -y eza; then
+     && apt_q update && apt_q install eza; then
     ok "eza via apt"
   elif has cargo; then
     warn "eza apt repo failed; building via cargo"
@@ -98,7 +109,7 @@ ensure_nushell() {
           | sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg 2>/dev/null \
      && echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" \
           | sudo tee /etc/apt/sources.list.d/fury-nushell.list >/dev/null \
-     && sudo apt-get update -y && sudo apt-get install -y nushell; then
+     && apt_q update && apt_q install nushell; then
     ok "nushell via apt"
   elif has cargo; then
     warn "nushell apt repo failed; building via cargo (slow)"
@@ -119,7 +130,7 @@ ensure_carapace() {
          | head -1)"
   if [ -n "$url" ]; then
     tmp="$(mktemp -d)"
-    if curl -fsSL "$url" -o "$tmp/carapace.deb" && sudo apt-get install -y "$tmp/carapace.deb"; then
+    if curl -fsSL "$url" -o "$tmp/carapace.deb" && apt_q install "$tmp/carapace.deb"; then
       ok "carapace via deb"
     else
       warn "carapace install failed - completions still work without it"
