@@ -11,6 +11,9 @@ e-terminal-rollback/
 # Installed-commit marker (written by the installer, read by e-update)
 .e-terminal-commit
 
+# Private notes (client mappings, scratch) — never commit
+notes/
+
 # Editor/agent local state
 .claude/
 

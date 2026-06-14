@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Cached: hcloud/doctl have high startup cost; run at most once per $ttl seconds.
 prov="${1:-}"
 cache="/tmp/e-terminal-cloud-${prov}.cache"
 ttl=15
