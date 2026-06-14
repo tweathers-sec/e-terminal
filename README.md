@@ -184,6 +184,8 @@ theme list          # list available themes
 
 **Agency-inspired** — color-matched to each service / agency's branding
 
+*In honor of those who have served, and those who continue to serve and keep us safe — these themes are for them.*
+
 | Theme | Inspired by | Palette |
 |---|---|---|
 | `soldier` | U.S. Army | black + gold |
