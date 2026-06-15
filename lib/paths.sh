@@ -39,6 +39,10 @@ _eterm_is_ours() {
   [ -e "$1" ] && grep -q '_eterm_osc_precmd' "$1" 2>/dev/null
 }
 
+_eterm_is_distro_default() {
+  [ -f /etc/skel/.zshrc ] && cmp -s "$1" /etc/skel/.zshrc
+}
+
 capture_user_config() {
   info "Capturing existing shell setup"
 
