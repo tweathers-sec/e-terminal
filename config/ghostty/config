@@ -1,6 +1,6 @@
 theme = jellybeans
 font-family = JetBrainsMono Nerd Font
-font-size = 19
+font-size = 18
 background-blur = 20
 mouse-hide-while-typing = true
 macos-option-as-alt = true
@@ -17,3 +17,5 @@ mouse-scroll-multiplier = 2
 resize-overlay = never
 font-thicken = true
 font-feature = -calt
+
+config-file = ?config.local
