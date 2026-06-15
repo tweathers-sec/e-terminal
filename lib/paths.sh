@@ -47,9 +47,11 @@ capture_user_config() {
   info "Capturing existing shell setup"
 
   local zrc="$HOME/.zshrc"
-  if [ -f "$zrc" ] && ! _eterm_is_ours "$zrc"; then
+  if [ -f "$zrc" ] && ! _eterm_is_ours "$zrc" && ! _eterm_is_distro_default "$zrc"; then
     ETERM_ZSH_CARRY="$(cat "$zrc")"
     ok "carrying your ~/.zshrc verbatim (nvm, version managers, aliases, env)"
+  elif [ -f "$zrc" ] && _eterm_is_distro_default "$zrc"; then
+    ok "~/.zshrc is the distro default; not carrying it (would override the prompt)"
   fi
 
   local baseline; baseline="$(_eterm_baseline_paths | sort -u)"
