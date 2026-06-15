@@ -125,9 +125,9 @@ ensure_carapace() {
   if [ -n "${DRY_RUN:-}" ]; then log "  [dry-run] install carapace-bin .deb from latest release"; return 0; fi
   local arch deb_arch url tmp
   arch="$(uname -m)"; case "$arch" in x86_64) deb_arch=amd64;; aarch64|arm64) deb_arch=arm64;; *) deb_arch=amd64;; esac
-  url="$(curl -fsSL https://api.github.com/repos/carapace-sh/carapace-bin/releases/latest \
-         | jq -r --arg a "$deb_arch" '.assets[] | select(.name | test("linux." + $a + ".deb$")) | .browser_download_url' \
-         | head -1)"
+  url="$(curl -fsSL https://api.github.com/repos/carapace-sh/carapace-bin/releases/latest 2>/dev/null \
+         | jq -r --arg a "$deb_arch" '.assets[] | select(.name | test("linux." + $a + ".deb$")) | .browser_download_url' 2>/dev/null \
+         | head -1 || true)"
   if [ -n "$url" ]; then
     tmp="$(mktemp -d)"
     if curl -fsSL "$url" -o "$tmp/carapace.deb" && apt_q install "$tmp/carapace.deb"; then
@@ -147,9 +147,9 @@ ensure_zellij() {
   if [ -n "${DRY_RUN:-}" ]; then log "  [dry-run] download zellij musl release tarball"; return 0; fi
   local arch rel url tmp
   arch="$(uname -m)"; case "$arch" in x86_64) rel=x86_64;; aarch64|arm64) rel=aarch64;; *) rel=x86_64;; esac
-  url="$(curl -fsSL https://api.github.com/repos/zellij-org/zellij/releases/latest \
-         | jq -r --arg a "$rel" '.assets[] | select(.name | test("zellij-" + $a + "-unknown-linux-musl.tar.gz$")) | .browser_download_url' \
-         | head -1)"
+  url="$(curl -fsSL https://api.github.com/repos/zellij-org/zellij/releases/latest 2>/dev/null \
+         | jq -r --arg a "$rel" '.assets[] | select(.name | test("zellij-" + $a + "-unknown-linux-musl.tar.gz$")) | .browser_download_url' 2>/dev/null \
+         | head -1 || true)"
   if [ -n "$url" ]; then
     tmp="$(mktemp -d)"
     if curl -fsSL "$url" | tar -xz -C "$tmp" 2>/dev/null && [ -f "$tmp/zellij" ]; then
@@ -170,9 +170,9 @@ ensure_release_bin() {
   if [ -n "${DRY_RUN:-}" ]; then log "  [dry-run] download $bin from $repo latest release"; return 0; fi
   local arch rel_arch url tmp
   arch="$(uname -m)"; case "$arch" in x86_64) rel_arch=amd64;; aarch64|arm64) rel_arch=arm64;; *) rel_arch=amd64;; esac
-  url="$(curl -fsSL "https://api.github.com/repos/$repo/releases/latest" \
-         | jq -r --arg a "$rel_arch" '.assets[] | select(.name | test("linux.*" + $a + ".tar.gz$")) | .browser_download_url' \
-         | head -1)"
+  url="$(curl -fsSL "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null \
+         | jq -r --arg a "$rel_arch" '.assets[] | select(.name | test("linux.*" + $a + ".tar.gz$")) | .browser_download_url' 2>/dev/null \
+         | head -1 || true)"
   if [ -n "$url" ]; then
     tmp="$(mktemp -d)"
     if curl -fsSL "$url" | tar -xz -C "$tmp" 2>/dev/null && [ -f "$tmp/$bin" ]; then
