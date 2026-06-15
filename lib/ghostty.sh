@@ -15,6 +15,22 @@ is_headed_linux() {
   return 1
 }
 
+# VM GPUs (Parallels/VMware/etc.) commonly expose OpenGL 4.0, but Ghostty needs 4.3,
+# so it fails to open a window. Route the launcher through Mesa software GL (llvmpipe,
+# which advertises 4.5) via a user-level .desktop override. Bare metal keeps hardware GL.
+_ghostty_vm_softgl() {
+  command -v ghostty >/dev/null 2>&1 || return 0
+  systemd-detect-virt -q 2>/dev/null || return 0
+  local sys="/usr/share/applications/com.mitchellh.ghostty.desktop"
+  local usr="$HOME/.local/share/applications/com.mitchellh.ghostty.desktop"
+  [ -f "$sys" ] || return 0
+  if [ -n "${DRY_RUN:-}" ]; then log "  [dry-run] would route Ghostty through software GL (VM)"; return 0; fi
+  mkdir -p "$HOME/.local/share/applications"
+  sed 's|^Exec=\(/usr/bin/\)\{0,1\}ghostty|Exec=env LIBGL_ALWAYS_SOFTWARE=1 \1ghostty|' "$sys" > "$usr"
+  update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
+  ok "  $(systemd-detect-virt) VM: routed Ghostty through software GL (VM GPUs cap below the OpenGL 4.3 it needs)"
+}
+
 install_ghostty_linux() {
   [ "$OS" = macos ] && return 0
   [ -n "${SKIP_GHOSTTY:-}" ] && { log "  SKIP_GHOSTTY set; leaving Ghostty alone"; return 0; }
@@ -40,6 +56,7 @@ install_ghostty_linux() {
 
   if command -v ghostty >/dev/null 2>&1 && ghostty --version 2>/dev/null | grep -qF "$ver"; then
     ok "  Ghostty $ver already current"
+    _ghostty_vm_softgl
     return 0
   fi
   if [ -n "${DRY_RUN:-}" ]; then log "  [dry-run] would install/upgrade Ghostty to $ver"; return 0; fi
@@ -83,4 +100,5 @@ install_ghostty_linux() {
     warn "  Ghostty download failed; skipping"
   fi
   rm -f "$tmp"
+  _ghostty_vm_softgl
 }
