@@ -31,7 +31,7 @@ install_packages_apt() {
   apt_q update
   apt_install zsh tmux git curl wget unzip gpg ca-certificates \
               fontconfig net-tools dnsutils iproute2 openssl \
-              zstd xz-utils p7zip-full fzf ripgrep jq bat fd-find
+              zstd xz-utils p7zip-full fzf ripgrep jq bat fd-find vim nano
   link_bat_fd_shims
 
   ensure_starship

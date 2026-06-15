@@ -28,8 +28,8 @@ path add ($nu.home-dir | path join ".cargo" "bin")
 path add ($nu.home-dir | path join ".local" "bin")
 path add ($nu.home-dir | path join "go" "bin")
 
-$env.EDITOR = (["nvim" "vim" "editor" "nano" "vi"] | where {|e| which $e | is-not-empty} | get 0? | default "vi")
-$env.VISUAL = $env.EDITOR
+let _eterm_editor = (["nvim" "vim" "editor" "nano" "vi"] | where {|e| which $e | is-not-empty} | get 0?)
+if ($_eterm_editor | is-not-empty) { $env.EDITOR = $_eterm_editor; $env.VISUAL = $_eterm_editor }
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash'
 
 if (($env.TERM? | default "") == "linux") {
