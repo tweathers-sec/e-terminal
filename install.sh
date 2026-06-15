@@ -14,6 +14,8 @@ source "$DOTFILES_DIR/lib/font.sh"
 source "$DOTFILES_DIR/lib/plugins.sh"
 source "$DOTFILES_DIR/lib/paths.sh"
 
+trap 'rc=$?; err "install aborted unexpectedly (${BASH_SOURCE[0]##*/}:${LINENO}, exit ${rc}) - please report this"' ERR
+
 link_configs() {
   info "Installing configs"
   local C="$DOTFILES_DIR/config"

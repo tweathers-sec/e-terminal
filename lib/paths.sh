@@ -66,6 +66,7 @@ EOF
   ETERM_CARRIED_PATHS="$(printf '%s' "$extras" | sed '/^[[:space:]]*$/d')"
   local n; n="$(printf '%s\n' "$ETERM_CARRIED_PATHS" | grep -c . || true)"
   [ -n "$ETERM_CARRIED_PATHS" ] && ok "carrying $n custom PATH dir(s) for nushell"
+  return 0
 }
 
 _eterm_strip_block() {
