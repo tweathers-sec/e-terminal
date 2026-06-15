@@ -17,7 +17,8 @@ is_headed_linux() {
 
 # VM GPUs (Parallels/VMware/etc.) commonly expose OpenGL 4.0, but Ghostty needs 4.3,
 # so it fails to open a window. Route the launcher through Mesa software GL (llvmpipe,
-# which advertises 4.5) via a user-level .desktop override. Bare metal keeps hardware GL.
+# which advertises 4.5) via a user-level .desktop override. DBusActivatable=false forces
+# GNOME to honor our Exec line (D-Bus activation would bypass it). Bare metal keeps hardware GL.
 _ghostty_vm_softgl() {
   command -v ghostty >/dev/null 2>&1 || return 0
   systemd-detect-virt -q 2>/dev/null || return 0
@@ -26,7 +27,8 @@ _ghostty_vm_softgl() {
   [ -f "$sys" ] || return 0
   if [ -n "${DRY_RUN:-}" ]; then log "  [dry-run] would route Ghostty through software GL (VM)"; return 0; fi
   mkdir -p "$HOME/.local/share/applications"
-  sed 's|^Exec=\(/usr/bin/\)\{0,1\}ghostty|Exec=env LIBGL_ALWAYS_SOFTWARE=1 \1ghostty|' "$sys" > "$usr"
+  sed -e 's|^Exec=\(/usr/bin/\)\{0,1\}ghostty|Exec=env LIBGL_ALWAYS_SOFTWARE=1 \1ghostty|' \
+      -e 's|^DBusActivatable=true|DBusActivatable=false|' "$sys" > "$usr"
   update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
   ok "  $(systemd-detect-virt) VM: routed Ghostty through software GL (VM GPUs cap below the OpenGL 4.3 it needs)"
 }
