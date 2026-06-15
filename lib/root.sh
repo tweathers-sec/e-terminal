@@ -42,6 +42,11 @@ link_tools_systemwide() {
     case "$p" in /usr/local/bin/*) continue ;; esac
     run sudo ln -sf "$p" "/usr/local/bin/$b"
   done
+  local pair real
+  for pair in fd:fdfind bat:batcat; do
+    real="$(command -v "${pair##*:}" 2>/dev/null || true)"
+    [ -n "$real" ] && run sudo ln -sf "$real" "/usr/local/bin/${pair%%:*}"
+  done
 }
 
 install_root() {
