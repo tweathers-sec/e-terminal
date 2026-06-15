@@ -33,7 +33,7 @@ link_user_configs() {
 link_tools_systemwide() {
   local b p d
   local dirs=("$HOME/.local/bin" "$HOME/.cargo/bin" "/opt/homebrew/bin")
-  for b in starship zoxide carapace hcloud doctl; do
+  for b in starship zoxide carapace zellij hcloud doctl; do
     p="$(command -v "$b" 2>/dev/null || true)"
     if [ -z "$p" ]; then
       for d in "${dirs[@]}"; do [ -x "$d/$b" ] && { p="$d/$b"; break; }; done
