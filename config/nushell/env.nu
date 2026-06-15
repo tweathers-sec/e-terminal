@@ -20,6 +20,7 @@ if ($nu.os-info.name == "macos") {
   path add "/opt/homebrew/sbin"
 } else {
   path add "/usr/local/sbin"
+  path add "/usr/local/bin"
   path add "/usr/sbin"
   path add "/sbin"
 }
