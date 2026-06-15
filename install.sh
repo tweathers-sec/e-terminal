@@ -56,6 +56,15 @@ link_configs() {
   seed_local "$C/zsh/.zshrc.local.example"          "$HOME/.zshrc.local"
   seed_local "$C/nushell/env.local.example.nu"      "$NU_DIR/env.local.nu"
   seed_local "$C/tmux/themes/arrow.conf"       "$HOME/.config/tmux/theme.conf"
+  if [ -z "${DRY_RUN:-}" ] && [ ! -e "$HOME/.config/ghostty/config.local" ]; then
+    mkdir -p "$HOME/.config/ghostty"
+    if [ "$OS" = macos ]; then
+      printf '# Ghostty per-machine overrides (font-size, window size, etc.). Edit freely; e-update never touches this.\n' > "$HOME/.config/ghostty/config.local"
+    else
+      printf '# Ghostty per-machine overrides. Edit freely; e-update never touches this.\n# A 1x Linux display wants a smaller font than a Retina Mac.\nfont-size = 14\nwindow-width = 120\nwindow-height = 34\n' > "$HOME/.config/ghostty/config.local"
+    fi
+    ok "seeded ghostty local overrides ($(abbrev "$HOME/.config/ghostty/config.local"))"
+  fi
   if [ -z "${DRY_RUN:-}" ]; then
     local zc="$HOME/.config/zellij/config.kdl"; mkdir -p "$HOME/.config/zellij"; [ -f "$zc" ] || : > "$zc"
     grep -qE '^[[:space:]]*theme[[:space:]]+"' "$zc" || { printf 'theme "arrow"\n' >> "$zc"; ok "zellij theme set to arrow"; }
