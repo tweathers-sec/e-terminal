@@ -19,6 +19,11 @@ bindkey -e
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 typeset -U path PATH
 
+for _ed in nvim vim editor nano vi; do
+  command -v "$_ed" >/dev/null 2>&1 && { export EDITOR="$_ed" VISUAL="$_ed"; break; }
+done
+unset _ed
+
 autoload -Uz compinit && compinit -C
 
 [[ "$TERM" == linux ]] && export STARSHIP_CONFIG="$HOME/.config/starship-console.toml"
@@ -54,7 +59,7 @@ if command -v eza >/dev/null 2>&1; then
   unset _icons
 fi
 command -v bat >/dev/null 2>&1 && alias cat='bat --paging=never'
-alias v='nvim'
+alias v="${EDITOR:-vi}"
 alias c='clear'
 
 cx() {

@@ -28,7 +28,8 @@ path add ($nu.home-dir | path join ".cargo" "bin")
 path add ($nu.home-dir | path join ".local" "bin")
 path add ($nu.home-dir | path join "go" "bin")
 
-$env.EDITOR = "nvim"
+$env.EDITOR = (["nvim" "vim" "editor" "nano" "vi"] | where {|e| which $e | is-not-empty} | get 0? | default "vi")
+$env.VISUAL = $env.EDITOR
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash'
 
 if (($env.TERM? | default "") == "linux") {
