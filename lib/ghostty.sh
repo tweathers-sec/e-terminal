@@ -15,10 +15,6 @@ is_headed_linux() {
   return 1
 }
 
-# VM GPUs (Parallels/VMware/etc.) commonly expose OpenGL 4.0, but Ghostty needs 4.3,
-# so it fails to open a window. Route the launcher through Mesa software GL (llvmpipe,
-# which advertises 4.5) via a user-level .desktop override. DBusActivatable=false forces
-# GNOME to honor our Exec line (D-Bus activation would bypass it). Bare metal keeps hardware GL.
 _ghostty_vm_softgl() {
   command -v ghostty >/dev/null 2>&1 || return 0
   systemd-detect-virt -q 2>/dev/null || return 0
