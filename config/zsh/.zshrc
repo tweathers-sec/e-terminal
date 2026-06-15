@@ -16,7 +16,7 @@ bindkey -e
 
 [[ "$OSTYPE" == darwin* && -x /usr/libexec/path_helper ]] && eval "$(/usr/libexec/path_helper -s)"
 
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 typeset -U path PATH
 
 autoload -Uz compinit && compinit -C
