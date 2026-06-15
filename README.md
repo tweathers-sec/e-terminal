@@ -66,6 +66,24 @@ headless servers skip it (the config is in place either way).
 
 ---
 
+## Tested on
+
+Validated end to end on each platform below - a fresh install to completion, then the prompt,
+PATH, `EDITOR`, the full command toolbelt, and the shells all exercised as both the login user
+and `root` (via `rootsh`):
+
+| Platform | Versions |
+|---|---|
+| macOS | Apple Silicon (primary development platform) |
+| Ubuntu | 22.04, 24.04 (server + desktop), and 26.04 LTS |
+| Debian | 13 (trixie) |
+| Kali Linux | rolling (2026) |
+
+Linux validation runs on `arm64` (Apple Silicon under Parallels). The same package and
+release-download paths cover `x86_64`/`amd64`, and Parrot follows the Debian/Kali path.
+
+---
+
 ## Updating
 
 The installer strips git metadata from `~/.e-terminal`, so a deployed copy has no remote of its own
