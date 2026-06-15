@@ -34,5 +34,7 @@ install_tmux_plugins() {
   if [ -n "${SKIP_PLUGINS:-}" ] || [ -n "${SKIP_TMUX_PLUGINS:-}" ]; then return 0; fi
   [ -x "$TPM_DIR/bin/install_plugins" ] || { warn "TPM not present; run 'prefix + I' in tmux"; return 0; }
   info "Installing tmux plugins via TPM"
-  run env TMUX_PLUGIN_MANAGER_PATH="$HOME/.config/tmux/plugins" "$TPM_DIR/bin/install_plugins"
+  run env TMUX_PLUGIN_MANAGER_PATH="$HOME/.config/tmux/plugins" "$TPM_DIR/bin/install_plugins" \
+    || warn "  some tmux plugins did not install; open tmux and press prefix + I to finish"
+  return 0
 }
