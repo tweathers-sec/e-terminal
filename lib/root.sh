@@ -45,7 +45,8 @@ link_tools_systemwide() {
   local pair real
   for pair in fd:fdfind bat:batcat; do
     real="$(command -v "${pair##*:}" 2>/dev/null || true)"
-    [ -n "$real" ] && run sudo ln -sf "$real" "/usr/local/bin/${pair%%:*}"
+    [ -n "$real" ] || continue
+    run sudo ln -sf "$real" "/usr/local/bin/${pair%%:*}"
   done
 }
 
