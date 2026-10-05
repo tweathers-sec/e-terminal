@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 GHOSTTY_DEB_REPO="${GHOSTTY_DEB_REPO:-mkasberg/ghostty-ubuntu}"
 
 is_headed_linux() {
