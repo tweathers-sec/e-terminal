@@ -26,9 +26,9 @@ const E_COMMANDS = [
 
 export def ehelp [...terms: string] {
   if ($terms | is-empty) { return $E_COMMANDS }
-  let f = ($terms | str join ' ' | str downcase)
+  let f = ($terms | str join ' ' | str lowercase)
   let hits = ($E_COMMANDS | where {|r|
-    ($r.group | str contains $f) or ($r.command | str contains $f) or ($r.description | str downcase | str contains $f)
+    ($r.group | str contains $f) or ($r.command | str contains $f) or ($r.description | str lowercase | str contains $f)
   })
   if ($hits | is-empty) {
     print $"no e-terminal command matches '($f)'. For any command's own help, run:  ($f) --help"

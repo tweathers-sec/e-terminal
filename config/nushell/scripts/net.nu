@@ -58,7 +58,7 @@ def parse-ifconfig [dump: string] {
     let v6 = ($b
       | parse --regex '\binet6 (?<ip>[0-9A-Fa-f:]+)'
       | get ip
-      | where {|x| (not ($x | str downcase | str starts-with 'fe80')) and ($x != '::1') })
+      | where {|x| (not ($x | str lowercase | str starts-with 'fe80')) and ($x != '::1') })
     let mac = ($b | parse --regex '(?:ether|lladdr)\s+(?<m>[0-9A-Fa-f:]{17})' | get m.0? | default '')
 
     let up = if ($status != null) { $status == 'active' } else { $flags | str contains 'RUNNING' }
