@@ -2,20 +2,34 @@ export def extract [file: path] {
   if (not ($file | path exists)) {
     error make --unspanned { msg: $'no such file: ($file)' }
   }
-  let n = ($file | path basename | str downcase)
-  if ($n | str ends-with '.tar.gz')  or ($n | str ends-with '.tgz')  { ^tar xzf $file }
-  else if ($n | str ends-with '.tar.bz2') or ($n | str ends-with '.tbz2') { ^tar xjf $file }
-  else if ($n | str ends-with '.tar.xz')  or ($n | str ends-with '.txz')  { ^tar xJf $file }
-  else if ($n | str ends-with '.tar.zst') { ^tar --use-compress-program=unzstd -xf $file }
-  else if ($n | str ends-with '.tar')     { ^tar xf $file }
-  else if ($n | str ends-with '.zip')     { ^unzip $file }
-  else if ($n | str ends-with '.7z')      { ^7z x $file }
-  else if ($n | str ends-with '.rar')     { ^unrar x $file }
-  else if ($n | str ends-with '.gz')      { ^gunzip -k $file }
-  else if ($n | str ends-with '.bz2')     { ^bunzip2 -k $file }
-  else if ($n | str ends-with '.xz')      { ^unxz -k $file }
-  else if ($n | str ends-with '.zst')     { ^unzstd -k $file }
-  else { error make --unspanned { msg: $'don\u(27)t know how to extract ($file | path basename)' } }
+  let n = ($file | path basename | str lowercase)
+  if ($n | str ends-with '.tar.gz') or ($n | str ends-with '.tgz') {
+    ^tar xzf $file
+  } else if ($n | str ends-with '.tar.bz2') or ($n | str ends-with '.tbz2') {
+    ^tar xjf $file
+  } else if ($n | str ends-with '.tar.xz') or ($n | str ends-with '.txz') {
+    ^tar xJf $file
+  } else if ($n | str ends-with '.tar.zst') {
+    ^tar --use-compress-program=unzstd -xf $file
+  } else if ($n | str ends-with '.tar') {
+    ^tar xf $file
+  } else if ($n | str ends-with '.zip') {
+    ^unzip $file
+  } else if ($n | str ends-with '.7z') {
+    ^7z x $file
+  } else if ($n | str ends-with '.rar') {
+    ^unrar x $file
+  } else if ($n | str ends-with '.gz') {
+    ^gunzip -k $file
+  } else if ($n | str ends-with '.bz2') {
+    ^bunzip2 -k $file
+  } else if ($n | str ends-with '.xz') {
+    ^unxz -k $file
+  } else if ($n | str ends-with '.zst') {
+    ^unzstd -k $file
+  } else {
+    error make --unspanned { msg: $'don\u(27)t know how to extract ($file | path basename)' }
+  }
 }
 
 export def weather [...city: string] {
