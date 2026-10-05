@@ -4,7 +4,9 @@ font-size = 18
 background-blur = 20
 mouse-hide-while-typing = true
 macos-option-as-alt = true
-macos-titlebar-style = tabs
+# 'tabs' style is Ghostty's custom titlebar, tested only through macOS 14.
+# On macOS 26+ it collapses every tab into one pill at the window edge.
+macos-titlebar-style = transparent
 
 shell-integration-features = cursor,sudo,title,ssh-env
 
