@@ -32,4 +32,15 @@ git clone --depth 1 "$REPO_URL" "$tmp/src" || { echo "e-update: fetch failed" >&
 
 echo "e-update: installing"
 SKIP_ROOT=1 SKIP_SHELL_CHANGE=1 SKIP_BREW=1 SKIP_APT=1 HOMEBREW_NO_AUTO_UPDATE=1 bash "$tmp/src/install.sh"
+
+# Your configs are COPIES, but root's are SYMLINKS into the persistent checkout.
+# Refresh it so root tracks updates too; without this root keeps whatever it had
+# at install time. Content-only, so no sudo is needed: the symlinks already exist.
+ETERM_HOME="${E_TERMINAL_HOME:-$HOME/.e-terminal}"
+if [ -d "$ETERM_HOME" ] && [ -f "$ETERM_HOME/install.sh" ]; then
+  echo "e-update: refreshing $ETERM_HOME (root's configs symlink into it)"
+  cp -Rp "$tmp/src/." "$ETERM_HOME/" 2>/dev/null \
+    || echo "e-update: warning - could not refresh $ETERM_HOME; root may be stale" >&2
+fi
+
 echo "e-update: done - open a new terminal to load changes"
