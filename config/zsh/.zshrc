@@ -76,6 +76,9 @@ ssh() {
   fi
 }
 
+# drop into a styled root session; mirrors the nushell def in nushell/scripts/sys.nu
+rootsh() { sudo -H "${1:-nu}"; }
+
 _eterm_accept_line() { zle reset-prompt; zle .accept-line; }
 zle -N accept-line _eterm_accept_line
 
